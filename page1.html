@@ -130,14 +130,14 @@
       <img class="mascot" src="mascot.png" alt="" onerror="this.style.display='none'"/>
     </div>
 
-    <script>
-      document.querySelectorAll(".card").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const players = btn.textContent.trim();
-          alert(`Starting UBHACKOPOLY with ${players} players…`);
-          // Example: window.location = 'player-name.html?count=' + players;
-        });
+  <script>
+    document.querySelectorAll(".card").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const players = btn.textContent.trim(); // "2", "3", or "4"
+      // Navigate to page2.html and pass player count as query param
+      window.location.href = 'page2.html?count=' + players;
       });
+    });
     </script>
   </body>
 </html>
