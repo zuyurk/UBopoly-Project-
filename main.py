@@ -15,7 +15,6 @@ def main():
         Player(name3),
         Player(name4),
     ]
-
     turn = 0
     while True:
         player = players[turn % len(players)]
