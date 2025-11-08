@@ -2,7 +2,7 @@ class Board:
     def __init__(self):
         self.tile_names = [
             "GO", "Baird", "Community Chest", "Clements", "SA Fees", "North Bus",
-            "Baldy", "Chance", "Jacobs", "Park", "Academic Violation",
+            "Baldy", "Chance", "Jacobs", "Park",
             "Just Visiting", "O'Brian", "M & T Banks", "Norton", "Knox",
             "South Bus", "Bonner", "Community Chest", "Talbert", "Hochstetter",
             "Free Parking", "Cooke", "Chance", "Fronczak", "NSC",
