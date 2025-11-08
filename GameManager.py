@@ -1,5 +1,5 @@
 from player import Player
-from board import Board
+from Objects.board import Board
 import random
 
 class GameManager:
