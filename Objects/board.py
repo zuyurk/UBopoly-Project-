@@ -1,6 +1,5 @@
 class Board:
     def __init__(self):
-        # Custom tile names in the order you provided
         self.tile_names = [
             "GO", "Baird", "Community Chest", "Clements", "SA Fees", "North Bus",
             "Baldy", "Chance", "Jacobs", "Park", "Academic Violation",
@@ -38,8 +37,8 @@ class Board:
             y = 0
             self.tiles.append({"name": self.tile_names[i], "x": x, "y": y})
 
-        # Right column: The Commons -> Jarvis (index 32-40)
-        for i in range(32, 41):
+        # Right column: The Commons -> Jarvis (index 32–end)
+        for i in range(32, len(self.tile_names)):
             x = size
             y = (i - 32 + 1) * step
             self.tiles.append({"name": self.tile_names[i], "x": x, "y": y})
