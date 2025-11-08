@@ -1,4 +1,4 @@
-from player import Player
+from Objects.player import Player
 from Objects.board import Board
 import random
 
