@@ -1,51 +1,73 @@
-class player:
-  def __init__(self, name, money, properties, chance, communityCards, jail, bankrupt):
-    self.name = name #String name
-    self.money = money  #Int money
-    self.properties = properties  #List properties
-    self.chance = chance #List chance cards
-    self.communityCards = communityCards #List community cards
-    self.jail = False #Bool in jail
-    self.bankrupt = False #Bool if bankrupt
+class Player:
+    def __init__(self, name, starting_balance=1500, start_tile=0):
+        self.name = name  # Player name
+        self.balance = starting_balance  # Money (Bear Bucks)
+        self.position = start_tile  # Board tile index (0 = GO)
+        self.coordinates = (0, 0)  # (x, y) board coordinates for display
+        self.properties = []  # List of owned properties
+        self.in_jail = False  # Jail flag
+        self.jail_turns = 0  # Turns spent in jail
+        self.bankrupt = False  # Status flag
 
-  #Get name
-  def getName(self):
-    return self.name
-  
-  #Returns list of properties owned
-  def getProperties(self):
-    if not self.properties:
-      return "No Properties Owned"
-    
-    return self.properties;
+    def move(self, steps, board):
+        """Move player around the board and update coordinates."""
+        if self.in_jail:
+            return f"{self.name} is in jail and can't move this turn."
 
-  #Returns int of amount of money
-  def getMoney(self):
-    if self.money < 0 and len(self.property) <= 0:
-      self.bankrupt = True;
-    
-    return self.money;
+        prev_position = self.position
+        self.position = (self.position + steps) % len(board.tiles)
 
-  #Return list of all chance cards they own
-  def getChanceCards(self):
-    if not self.chance:
-      return "No Chance Cards Owned"
-    
-    return self.chance;
+        # Check if passed GO
+        passed_go = self.position < prev_position
+        if passed_go:
+            self.balance += 200
 
-  #Return list of all community cards they own
-  def getCommunityCards(self):
-    if not self.communityCardsOwned:
-      return "No Community Cards Owned"
-    
-    return self.communityCards
+        # Update the player's on-screen coordinates
+        self.coordinates = board.get_tile_coordinates(self.position)
 
-  #Boolean if they are in jail or not
-  def getJailStatus(self):
-    return self.jail
-  
-  #Boolean if they are bankrupt or not
-  def getBankruptStatus(self):
-    return self.bankrupt
+        return (
+            f"{self.name} passed GO! +$200"
+            if passed_go
+            else f"{self.name} moved {steps} spaces to {board.tiles[self.position]['name']}."
+        )
 
+    def buy_property(self, property):
+        """Attempt to buy a property."""
+        if self.balance >= property.price and not property.owner:
+            self.balance -= property.price
+            property.owner = self
+            self.properties.append(property)
+            return f"{self.name} bought {property.name} for ${property.price}."
+        elif property.owner:
+            return f"{property.name} is already owned."
+        else:
+            return f"{self.name} doesn't have enough money to buy {property.name}."
 
+    def pay_rent(self, property):
+        """Pay rent if another player owns the property."""
+        if property.owner and property.owner != self:
+            rent = property.rent
+            if self.balance >= rent:
+                self.balance -= rent
+                property.owner.balance += rent
+                return f"{self.name} paid ${rent} rent to {property.owner.name}."
+            else:
+                self.go_bankrupt(property.owner)
+                return f"{self.name} couldn't afford rent and went bankrupt!"
+
+    def go_bankrupt(self, creditor=None):
+        """Handle bankruptcy."""
+        self.bankrupt = True
+        for prop in self.properties:
+            prop.owner = creditor  # Transfer ownership
+        self.properties.clear()
+        self.balance = 0
+        return f"{self.name} is bankrupt."
+
+    def net_worth(self):
+        """Calculate total net worth (cash + properties)."""
+        total_property_value = sum(p.price for p in self.properties)
+        return self.balance + total_property_value
+
+    def __repr__(self):
+        return f"<Player {self.name}: ${self.balance}, Pos={self.position}, Coords={self.coordinates}>"
