@@ -16,10 +16,6 @@
       * { box-sizing: border-box; }
       html, body { height: 100%; margin: 0; }
 
-      /* Body background:
-         1) Top layer: board image (contained, centered)
-         2) Bottom layer: money texture (AVIF) filling the page
-      */
       body{
         font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         color: var(--ink);
@@ -36,7 +32,6 @@
         position: relative;
       }
 
-      /* Bigger sky box with small margin */
       .sky{
         position: absolute;
         inset: 10px;
@@ -121,23 +116,24 @@
         <div class="subtitle">PLAYER SELECT</div>
 
         <div class="select-grid">
-          <button class="card" aria-label="2 players"><span class="num">2</span></button>
-          <button class="card" aria-label="3 players"><span class="num">3</span></button>
-          <button class="card" aria-label="4 players"><span class="num">4</span></button>
+          <button class="card" data-count="2" aria-label="2 players"><span class="num">2</span></button>
+          <button class="card" data-count="3" aria-label="3 players"><span class="num">3</span></button>
+          <button class="card" data-count="4" aria-label="4 players"><span class="num">4</span></button>
         </div>
       </div>
 
       <img class="mascot" src="mascot.png" alt="" onerror="this.style.display='none'"/>
     </div>
 
-  <script>
-    document.querySelectorAll(".card").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const players = btn.textContent.trim(); // "2", "3", or "4"
-      // Navigate to page2.html and pass player count as query param
-      window.location.href = 'page2.html?count=' + players;
+    <script>
+      // No popups — just navigate with the chosen count
+      document.querySelectorAll(".card").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const players = btn.dataset.count || btn.textContent.trim();
+          window.location.href = "page2.html?count=" + encodeURIComponent(players);
+        });
       });
-    });
     </script>
   </body>
 </html>
