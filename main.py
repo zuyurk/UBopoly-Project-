@@ -5,9 +5,15 @@ import random
 def main():
     # Initialize game
     board = Board()
+    name1 = input("Whats player1's name?")
+    name2 = input("Whats player2's name?")
+    name3 = input("Whats player3's name?")
+    name4 = input("Whats player4's name?")
     players = [
-        Player("Alice"),
-        Player("Bob")
+        Player(name1),
+        Player(name2),
+        Player(name3),
+        Player(name4),
     ]
 
     turn = 0
