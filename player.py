@@ -1,16 +1,20 @@
 class Player:
-    def __init__(self, name, starting_balance=1500, start_tile=0):
-        self.name = name  # Player name
-        self.balance = starting_balance  # Money (Bear Bucks)
-        self.position = start_tile  # Board tile index (0 = GO)
-        self.coordinates = (0, 0)  # (x, y) board coordinates for display
-        self.properties = []  # List of owned properties
-        self.in_jail = False  # Jail flag
-        self.jail_turns = 0  # Turns spent in jail
-        self.bankrupt = False  # Status flag
+    GO_CASH = 200  # Money received when passing GO
 
+    def __init__(self, name, starting_balance=1500, start_tile=0):
+        self.name = name
+        self.balance = starting_balance
+        self.position = start_tile  # Board index
+        self.coordinates = (0, 0)  # Optional: (x, y) for display
+        self.properties = []  # List of Property objects
+        self.in_jail = False
+        self.jail_turns = 0
+        self.bankrupt = False
+
+    # ------------------------
+    # Movement
+    # ------------------------
     def move(self, steps, board):
-        """Move player around the board and update coordinates."""
         if self.in_jail:
             return f"{self.name} is in jail and can't move this turn."
 
@@ -20,54 +24,72 @@ class Player:
         # Check if passed GO
         passed_go = self.position < prev_position
         if passed_go:
-            self.balance += 200
+            self.balance += Player.GO_CASH
 
-        # Update the player's on-screen coordinates
+        # Update coordinates (for UI purposes)
         self.coordinates = board.get_tile_coordinates(self.position)
 
         return (
-            f"{self.name} passed GO! +$200"
+            f"{self.name} passed GO! +${Player.GO_CASH}"
             if passed_go
             else f"{self.name} moved {steps} spaces to {board.tiles[self.position]['name']}."
         )
 
+    # ------------------------
+    # Property Management
+    # ------------------------
     def buy_property(self, property):
-        """Attempt to buy a property."""
-        if self.balance >= property.price and not property.owner:
-            self.balance -= property.price
-            property.owner = self
+        if self.balance >= property.purchase_price() and not property.owner():
+            self.balance -= property.purchase_price()
+            property.transfer_owner(self)
             self.properties.append(property)
-            return f"{self.name} bought {property.name} for ${property.price}."
-        elif property.owner:
-            return f"{property.name} is already owned."
+            return f"{self.name} bought {property.name} for ${property.purchase_price()}."
+        elif property.owner():
+            return f"{property.name} is already owned by {property.owner().name}."
         else:
             return f"{self.name} doesn't have enough money to buy {property.name}."
 
     def pay_rent(self, property):
-        """Pay rent if another player owns the property."""
-        if property.owner and property.owner != self:
-            rent = property.rent
+        if property.owner() and property.owner() != self:
+            rent = property.rent()
             if self.balance >= rent:
                 self.balance -= rent
-                property.owner.balance += rent
-                return f"{self.name} paid ${rent} rent to {property.owner.name}."
+                property.owner().balance += rent
+                return f"{self.name} paid ${rent} rent to {property.owner().name}."
             else:
-                self.go_bankrupt(property.owner)
+                self.go_bankrupt(property.owner())
                 return f"{self.name} couldn't afford rent and went bankrupt!"
 
+    def owns_full_color_set(self, color):
+        """Check if player owns all properties of a specific color."""
+        color_properties = [p for p in self.properties if p.color == color]
+        # Compare count with total properties of that color
+        total_color_count = sum(1 for p_name, c in Property.color_table.items() if c == color)
+        return len(color_properties) == total_color_count
+
+    # ------------------------
+    # Bankruptcy
+    # ------------------------
     def go_bankrupt(self, creditor=None):
-        """Handle bankruptcy."""
         self.bankrupt = True
         for prop in self.properties:
-            prop.owner = creditor  # Transfer ownership
+            if creditor:
+                prop.transfer_owner(creditor)
+            else:
+                prop.transfer_owner(None)
         self.properties.clear()
         self.balance = 0
         return f"{self.name} is bankrupt."
 
+    # ------------------------
+    # Money / Net Worth
+    # ------------------------
     def net_worth(self):
-        """Calculate total net worth (cash + properties)."""
-        total_property_value = sum(p.price for p in self.properties)
+        total_property_value = sum(p.purchase_price() for p in self.properties)
         return self.balance + total_property_value
 
+    # ------------------------
+    # Representation
+    # ------------------------
     def __repr__(self):
         return f"<Player {self.name}: ${self.balance}, Pos={self.position}, Coords={self.coordinates}>"
