@@ -64,7 +64,7 @@ class Player:
         """Check if player owns all properties of a specific color."""
         color_properties = [p for p in self.properties if p.color == color]
         # Compare count with total properties of that color
-        total_color_count = sum(1 for p_name, c in Property.color_table.items() if c == color)
+        total_color_count = sum(1 for p_name, c in property.color_table.items() if c == color)
         return len(color_properties) == total_color_count
 
     # ------------------------
