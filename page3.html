@@ -3,31 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monopoly Board</title>
+<title>UBHACKOPOLY – Game Board</title>
 <style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
     height: 100%;
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #d7eaff, #b0d0f2);
     overflow: hidden;
-    background-color: #f0f0f0;
   }
 
+  .game-container {
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    grid-template-rows: 1fr;
+    width: 95vw;
+    height: 95vh;
+    gap: 10px;
+  }
+
+  /* LEFT PANEL – Player info */
+  .sidebar {
+    background: #f8fafc;
+    border: 3px solid #222;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .player-card {
+    background: #e9eef5;
+    border-radius: 8px;
+    padding: 8px;
+    border-left: 6px solid;
+  }
+  .player-card.active {
+    background: #fff3cd;
+    border-color: gold;
+    font-weight: bold;
+  }
+  .player-name { font-size: 1rem; }
+  .player-balance { font-size: 0.9rem; color: #333; }
+
+  /* MIDDLE – Board */
   .board {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(11, 1fr);
     grid-template-rows: repeat(11, 1fr);
-    width: 90vmin;
-    height: 90vmin;
-    gap: 2px;
+    width: 100%;
+    height: 100%;
     border: 4px solid #333;
     background-color: #fff;
   }
@@ -37,8 +68,8 @@
     align-items: center;
     justify-content: center;
     font-size: calc(8px + 0.5vmin);
-    text-align: center;
     border: 1px solid #555;
+    text-align: center;
     padding: 2px;
   }
 
@@ -46,15 +77,6 @@
     font-weight: bold;
     background-color: rgb(19, 93, 205);
     color: white;
-    aspect-ratio: 1/1;
-  }
-
-  .bottom-row, .top-row {
-  aspect-ratio: 1/1; /* wider than tall */
-  } 
-
-  .left-col, .right-col {
-  aspect-ratio: 1/1; /* taller than wide */
   }
 
   .chance { background-color: #ffeb3b; }
@@ -62,58 +84,46 @@
   .bus { background-color: #9e9e9e; color: white; }
   .fees { background-color: #e91e63; color: white; }
 
-  /* Explicit grid placement */
-  /* Corners */
-  #go { grid-row: 11; grid-column: 11; }
-  #justVisiting { grid-row: 11; grid-column: 1; }
-  #freeParking { grid-row: 1; grid-column: 11; }
-  #goToJail { grid-row: 1; grid-column: 1; }
+  .player-token {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 6px rgba(0,0,0,.4);
+    transition: all 0.4s ease;
+  }
 
-  /* Bottom row tiles (left to right, excluding corners) */
-  #baird { grid-row: 11; grid-column: 10; }
-  #community1 { grid-row: 11; grid-column: 9; }
-  #clements { grid-row: 11; grid-column: 8; }
-  #saFees { grid-row: 11; grid-column: 7; }
-  #northBus { grid-row: 11; grid-column: 6; }
-  #baldy { grid-row: 11; grid-column: 5; }
-  #chance1 { grid-row: 11; grid-column: 4; }
-  #jacobs { grid-row: 11; grid-column: 3; }
-  #park { grid-row: 11; grid-column: 2; }
+  /* RIGHT PANEL – Actions */
+  .actions {
+    background: #f8fafc;
+    border: 3px solid #222;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px;
+    gap: 10px;
+  }
+  .actions button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #1360cd;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .actions button:hover { background: #1b76f2; transform: translateY(-2px); }
 
-  /* Left column (bottom to top, excluding corners) */
-  #obrian { grid-row: 10; grid-column: 1; }
-  #mtBanks { grid-row: 9; grid-column: 1; }
-  #norton { grid-row: 8; grid-column: 1; }
-  #knox { grid-row: 7; grid-column: 1; }
-  #southBus { grid-row: 6; grid-column: 1; }
-  #bonner { grid-row: 5; grid-column: 1; }
-  #community2 { grid-row: 4; grid-column: 1; }
-  #talbert { grid-row: 3; grid-column: 1; }
-  #hochstetter { grid-row: 2; grid-column: 1; }
+  .dice-display {
+    font-size: 2rem;
+    margin-top: 8px;
+  }
 
-  /* Top row (left to right, excluding corners) */
-  #cooke { grid-row: 1; grid-column: 2; }
-  #chance2 { grid-row: 1; grid-column: 3; }
-  #fronczak { grid-row: 1; grid-column: 4; }
-  #nsc { grid-row: 1; grid-column: 5; }
-  #downtownBus { grid-row: 1; grid-column: 6; }
-  #ketter { grid-row: 1; grid-column: 7; }
-  #slee { grid-row: 1; grid-column: 8; }
-  #valmar { grid-row: 1; grid-column: 9; }
-  #furnas { grid-row: 1; grid-column: 10; }
-
-  /* Right column (top to bottom, excluding corners) */
-    #theCommons { grid-row: 2; grid-column: 11; }
-    #centerArts2 { grid-row: 3; grid-column: 11; } /* renamed to avoid duplicate ID */
-    #community3 { grid-row: 4; grid-column: 11; }
-    #alumniArena { grid-row: 5; grid-column: 11; }
-    #shoppingBus { grid-row: 6; grid-column: 11; }
-    #chance3 { grid-row: 7; grid-column: 11; }
-    #davis { grid-row: 8; grid-column: 11; }
-    #textbookFees { grid-row: 9; grid-column: 11; }
-    #jarvis { grid-row: 10; grid-column: 11; }
-
-  
 </style>
 </head>
 <body>
@@ -125,49 +135,154 @@
   <div class="tile corner" id="justVisiting">Just Visiting</div>
 
   <!-- Bottom row -->
-  <div class="tile bottom-row" id="baird">Baird Hall</div>
-  <div class="tile bottom-row community" id="community1">Community Chest</div>
-  <div class="tile bottom-row" id="clements">Clements</div>
-  <div class="tile bottom-row fees" id="saFees">SA Fees</div>
-  <div class="tile bottom-row bus" id="northBus">North Bus</div>
-  <div class="tile bottom-row" id="baldy">Baldy</div>
-  <div class="tile bottom-row chance" id="chance1">Chance</div>
-  <div class="tile bottom-row" id="jacobs">Jacobs</div>
-  <div class="tile bottom-row" id="park">Park</div>
+  <div class="tile" id="baird">Baird</div>
+  <div class="tile community" id="community1">Community Chest</div>
+  <div class="tile" id="clements">Clements</div>
+  <div class="tile fees" id="saFees">SA Fees</div>
+  <div class="tile bus" id="northBus">North Bus</div>
+  <div class="tile" id="baldy">Baldy</div>
+  <div class="tile chance" id="chance1">Chance</div>
+  <div class="tile" id="jacobs">Jacobs</div>
+  <div class="tile" id="park">Park</div>
 
   <!-- Left column -->
-  <div class="tile left-col" id="obrian">O'Brian</div>
-  <div class="tile left-col" id="mtBanks">M & T Banks</div>
-  <div class="tile left-col" id="norton">Norton</div>
-  <div class="tile left-col" id="knox">Knox</div>
-  <div class="tile left-col bus" id="southBus">South Bus</div>
-  <div class="tile left-col" id="bonner">Bonner</div>
-  <div class="tile left-col community" id="community2">Community Chest</div>
-  <div class="tile left-col" id="talbert">Talbert</div>
-  <div class="tile left-col" id="hochstetter">Hochstetter</div>
+  <div class="tile" id="obrian">O'Brian</div>
+  <div class="tile" id="mtBanks">M & T Banks</div>
+  <div class="tile" id="norton">Norton</div>
+  <div class="tile" id="knox">Knox</div>
+  <div class="tile bus" id="southBus">South Bus</div>
+  <div class="tile" id="bonner">Bonner</div>
+  <div class="tile community" id="community2">Community Chest</div>
+  <div class="tile" id="talbert">Talbert</div>
+  <div class="tile" id="hochstetter">Hochstetter</div>
 
   <!-- Top row -->
-  <div class="tile top-row" id="cooke">Cooke</div>
-  <div class="tile top-row chance" id="chance2">Chance</div>
-  <div class="tile top-row" id="fronczak">Fronczak</div>
-  <div class="tile top-row" id="nsc">NSC</div>
-  <div class="tile top-row bus" id="downtownBus">Downtown Bus</div>
-  <div class="tile top-row" id="ketter">Ketter</div>
-  <div class="tile top-row" id="slee">Slee</div>
-  <div class="tile top-row" id="valmar">Valmar</div>
-  <div class="tile top-row" id="gotoAV">Go to Academic Violation</div>
+  <div class="tile" id="cooke">Cooke</div>
+  <div class="tile chance" id="chance2">Chance</div>
+  <div class="tile" id="fronczak">Fronczak</div>
+  <div class="tile" id="nsc">NSC</div>
+  <div class="tile bus" id="downtownBus">Downtown Bus</div>
+  <div class="tile" id="ketter">Ketter</div>
+  <div class="tile" id="slee">Slee</div>
+  <div class="tile" id="valmar">Valmar</div>
+  <div class="tile" id="gotoAV">Go to Academic Violation</div>
 
   <!-- Right column -->
-    <div class="tile right-col" id="theCommons">The Commons</div>
-    <div class="tile right-col" id="centerArts2">Center for Arts</div>
-    <div class="tile right-col community" id="community3">Community Chest</div>
-    <div class="tile right-col" id="alumniArena">Alumni Arena</div>
-    <div class="tile right-col bus" id="shoppingBus">Shopping Bus</div>
-    <div class="tile right-col chance" id="chance3">Chance</div>
-    <div class="tile right-col" id="davis">Davis</div>
-    <div class="tile right-col fees" id="textbookFees">Textbook Fees</div>
-    <div class="tile right-col" id="jarvis">Jarvis</div>
+    <div class="tile" id="theCommons">The Commons</div>
+    <div class="tile" id="centerArts2">Center for Arts</div>
+    <div class="tile community" id="community3">Community Chest</div>
+    <div class="tile" id="alumniArena">Alumni Arena</div>
+    <div class="tile bus" id="shoppingBus">Shopping Bus</div>
+    <div class="tile chance" id="chance3">Chance</div>
+    <div class="tile" id="davis">Davis</div>
+    <div class="tile fees" id="textbookFees">Textbook Fees</div>
+    <div class="tile" id="jarvis">Jarvis</div>
 
 </div>
+
+<script>
+/* ------------------------------
+   SETUP
+--------------------------------*/
+const players = JSON.parse(localStorage.getItem("players") || "[]");
+if (players.length === 0) {
+  alert("No player data found — returning to start!");
+  window.location.href = "page1.html";
+}
+
+const colors = ["red", "blue", "green", "yellow"];
+const board = document.getElementById("board");
+const sidebar = document.getElementById("playerSidebar");
+const diceDisplay = document.getElementById("diceDisplay");
+
+// Assign starting info
+players.forEach((p, i) => {
+  p.balance = 1500;
+  p.position = 0;
+  p.color = colors[i];
+});
+
+/* ------------------------------
+   DISPLAY SIDEBAR
+--------------------------------*/
+function renderSidebar(activeIndex = 0) {
+  sidebar.innerHTML = "";
+  players.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.classList.add("player-card");
+    if (i === activeIndex) card.classList.add("active");
+    card.style.borderLeftColor = p.color;
+    card.innerHTML = `
+      <div class="player-name">${p.name}</div>
+      <div class="player-balance">💵 $${p.balance}</div>
+    `;
+    sidebar.appendChild(card);
+  });
+}
+
+/* ------------------------------
+   CREATE PLAYER TOKENS
+--------------------------------*/
+const tokenMap = new Map();
+
+players.forEach((p) => {
+  const token = document.createElement("div");
+  token.classList.add("player-token");
+  token.style.backgroundColor = p.color;
+  board.appendChild(token);
+  tokenMap.set(p.name, token);
+});
+
+/* ------------------------------
+   MOVE PLAYER TOKEN
+--------------------------------*/
+const tilePositions = [
+  { bottom: "5%", right: "5%" }, // GO
+  { bottom: "5%", right: "15%" },
+  { bottom: "5%", right: "25%" },
+  { bottom: "5%", right: "35%" },
+  { bottom: "5%", right: "45%" },
+  { bottom: "5%", right: "55%" },
+  { bottom: "5%", right: "65%" },
+  { bottom: "5%", right: "75%" },
+  { bottom: "5%", right: "85%" },
+  { bottom: "5%", right: "95%" },
+  { bottom: "15%", right: "95%" },
+  // Add more coordinates as needed for 40 tiles
+];
+
+function moveToken(player, steps) {
+  player.position = (player.position + steps) % tilePositions.length;
+  const pos = tilePositions[player.position];
+  const token = tokenMap.get(player.name);
+  token.style.bottom = pos.bottom;
+  token.style.right = pos.right;
+}
+
+/* ------------------------------
+   GAME TURN SYSTEM
+--------------------------------*/
+let turn = 0;
+renderSidebar(turn);
+
+function nextTurn() {
+  turn = (turn + 1) % players.length;
+  renderSidebar(turn);
+}
+
+/* ------------------------------
+   BUTTON HANDLERS
+--------------------------------*/
+document.getElementById("rollBtn").addEventListener("click", () => {
+  const dice = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
+  diceDisplay.textContent = dice;
+  const current = players[turn];
+  moveToken(current, dice);
+});
+
+document.getElementById("endTurnBtn").addEventListener("click", nextTurn);
+document.getElementById("buyBtn").addEventListener("click", () => alert("Property bought (placeholder)!"));
+document.getElementById("useCardBtn").addEventListener("click", () => alert("Used jail card (placeholder)!"));
+</script>
 </body>
 </html>

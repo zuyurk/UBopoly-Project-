@@ -8,8 +8,7 @@
     :root{
       --sky-1:#e6f4ff; --sky-2:#bfe4f2; --ink:#1d2230;
       --tile:#f2e9d7; --shadow:0 12px 30px rgba(0,0,0,.18);
-      --accent:#0b5fbf; /* orange accent */
-      --accent-dark:#0b5fbf;
+      --accent:#0b5fbf; --accent-dark:#084b99;
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
@@ -41,11 +40,7 @@
       width:100%; font-size:clamp(14px,2.4vw,22px);
       padding:14px 16px; border-radius:14px; border:2px solid rgba(0,0,0,.1);
       outline:none; background:#ffffffd9; box-shadow:0 8px 18px rgba(0,0,0,.12);
-      transition:border-color .15s ease, box-shadow .15s ease;
     }
-    .name-input::placeholder{ color:#6b7280 }
-    .name-input:focus{ border-color:var(--accent); box-shadow:0 10px 24px rgba(0,0,0,.16), 0 0 0 3px rgba(255,100,43,.15) }
-
     .pieces-grid{
       width:min(90%,720px); margin:0 auto;
       display:grid; grid-template-columns:repeat(4,1fr);
@@ -55,17 +50,14 @@
       width:100%; aspect-ratio:1/1; border-radius:14px;
       background:var(--tile); border:3px dashed #c6bda7; box-shadow:var(--shadow);
       display:grid; place-items:center; cursor:pointer;
-      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+      transition:all .12s ease;
     }
     .piece:hover{ transform:translateY(-3px); box-shadow:0 16px 32px rgba(0,0,0,.22) }
     .piece.selected{ border-style:solid; border-color:var(--accent); background:#fff;
-      box-shadow:0 0 0 4px rgba(255,100,43,.18), 0 16px 32px rgba(0,0,0,.22) }
+      box-shadow:0 0 0 4px rgba(11,95,191,.18), 0 16px 32px rgba(0,0,0,.22) }
     .piece-label{ font-size:clamp(12px,2vw,16px); opacity:.5; user-select:none }
-
-    /* Continue button area */
     .actions{
-      width:min(90%,720px);
-      margin-top:clamp(8px,2vw,16px);
+      width:min(90%,720px); margin-top:clamp(8px,2vw,16px);
       display:flex; justify-content:center;
     }
     .btn-continue{
@@ -74,61 +66,57 @@
       background:linear-gradient(180deg, var(--accent), var(--accent-dark));
       color:#fff; font-weight:800; letter-spacing:.04em;
       box-shadow:0 10px 24px rgba(0,0,0,.18);
-      transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
-    }
-    .btn-continue:hover{ transform:translateY(-2px); box-shadow:0 16px 36px rgba(0,0,0,.24); filter:saturate(1.05); }
-    .btn-continue:active{ transform:translateY(0); box-shadow:0 8px 18px rgba(0,0,0,.18); }
-
-    @media(max-width:800px){ .pieces-grid{ grid-template-columns:repeat(2,1fr) } }
-    @media(max-width:640px){
-      .stage{ width:98vw; aspect-ratio:7/5 }
-      .sky{ inset:8px }
     }
   </style>
 </head>
 <body>
-  <div class="stage" role="main" aria-label="UBHACKOPOLY Player Setup">
+  <div class="stage">
     <div class="sky">
       <div class="subtitle">Player Setup</div>
-
       <div class="name-row">
-        <input class="name-input" type="text" placeholder="Enter your username" aria-label="Username" id="username"/>
+        <input class="name-input" type="text" placeholder="Enter your name" id="username"/>
       </div>
-
-      <div class="pieces-grid" role="group" aria-label="Choose your piece">
+      <div class="pieces-grid">
         <button class="piece" aria-label="Piece 1"><span class="piece-label">Piece 1</span></button>
         <button class="piece" aria-label="Piece 2"><span class="piece-label">Piece 2</span></button>
         <button class="piece" aria-label="Piece 3"><span class="piece-label">Piece 3</span></button>
         <button class="piece" aria-label="Piece 4"><span class="piece-label">Piece 4</span></button>
       </div>
-
-      <!-- Continue Button -->
       <div class="actions">
-        <button class="btn-continue" id="continueBtn" aria-label="Continue">Continue</button>
+        <button class="btn-continue" id="continueBtn">Continue</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Optional: highlight selected piece
     const pieces = document.querySelectorAll('.piece');
     let selectedPiece = null;
     pieces.forEach(btn => {
       btn.addEventListener('click', () => {
         pieces.forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
-        selectedPiece = btn.getAttribute('aria-label'); // "Piece 1" etc.
+        selectedPiece = btn.getAttribute('aria-label');
       });
     });
 
-    // Optional: navigate on continue (update target as needed)
+    const playerCount = parseInt(localStorage.getItem("playerCount")) || 2;
+    const allPlayers = JSON.parse(localStorage.getItem("players") || "[]");
+
     document.getElementById('continueBtn').addEventListener('click', () => {
       const name = document.getElementById('username').value.trim();
-      const params = new URLSearchParams();
-      if (name) params.set('name', name);
-      if (selectedPiece) params.set('piece', selectedPiece);
-      // Example target page:
-      window.location.href = 'page3.html' + (params.toString() ? ('?' + params.toString()) : '');
+      if (!name) return alert("Please enter your name!");
+      if (!selectedPiece) return alert("Please select your piece!");
+
+      allPlayers.push({ name, piece: selectedPiece });
+      localStorage.setItem("players", JSON.stringify(allPlayers));
+
+      if (allPlayers.length < playerCount) {
+        alert(`Player ${allPlayers.length} saved! Next player, please enter your info.`);
+        window.location.reload();
+      } else {
+        alert("All players set! Starting the game...");
+        window.location.href = "page3.html";
+      }
     });
   </script>
 </body>
