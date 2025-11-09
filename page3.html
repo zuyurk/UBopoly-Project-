@@ -67,6 +67,19 @@
   .player-name { font-weight: 700; font-size: 1rem; }
   .player-balance { font-size: 0.85rem; opacity: 0.9; }
 
+  .player-piece {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+  }
+  .player-piece img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
+  }
+
   /* The Board */
   .board {
     position: relative;
@@ -91,11 +104,7 @@
     padding: 3px;
   }
 
-  .corner {
-    font-weight: bold;
-    background: linear-gradient(145deg, #007bff, #001f5a);
-    color: white;
-  }
+  .corner { font-weight: bold; background: linear-gradient(145deg, #007bff, #001f5a); color: white; }
   .chance { background: #a78b1d; color: #fff; }
   .community { background: #007e33; color: white; }
   .bus { background: #5f5f5f; color: white; }
@@ -186,6 +195,8 @@
     box-shadow: 0 0 25px rgba(90,50,255,0.6);
   }
 
+  .dice-display { text-align:center; font-weight:700; opacity:.9; }
+
   /* Popup / notification */
   .popup {
     position: fixed;
@@ -204,11 +215,7 @@
     z-index: 999;
   }
 
-  .popup.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
+  .popup.show { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
@@ -279,13 +286,41 @@
 <div class="popup" id="popup">Notification</div>
 
 <script>
-const players = [
-  { name: "Player 1", color: "#00bfff", balance: 1500, piece: "🔵" },
-  { name: "Player 2", color: "#ff4b5c", balance: 1500, piece: "🔴" },
-  { name: "Player 3", color: "#ffd700", balance: 1500, piece: "🟡" },
-  { name: "Player 4", color: "#00ff88", balance: 1500, piece: "🟢" },
-];
+/* ---- Pull players from sessionStorage (set by page 2) ---- */
+function loadPlayersFromStorage() {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem('players') || '[]');
+    const count = parseInt(sessionStorage.getItem('playerCount') || '0', 10);
+
+    if (Array.isArray(stored) && stored.length > 0) {
+      // Assign distinct sidebar colors
+      const palette = ["#00bfff", "#ff4b5c", "#ffd700", "#00ff88", "#ff9f1c", "#9b5de5"];
+      return stored.slice(0, Math.max(count, stored.length)).map((p, idx) => ({
+        name: p.name || `Player ${idx+1}`,
+        color: palette[idx % palette.length],
+        balance: 1500,
+        pieceFile: p.piece || null
+      }));
+    }
+  } catch (e) { /* ignore and fall back */ }
+
+  // Fallback to demo players if nothing in storage
+  return [
+    { name: "Player 1", color: "#00bfff", balance: 1500, pieceFile: "busPiece.png" },
+    { name: "Player 2", color: "#ff4b5c", balance: 1500, pieceFile: "wingPiece.png" },
+    { name: "Player 3", color: "#ffd700", balance: 1500, pieceFile: "mascotPiece.png" },
+    { name: "Player 4", color: "#00ff88", balance: 1500, pieceFile: "turkeyPiece.png" },
+  ];
+}
+
+let players = loadPlayersFromStorage();
 let activePlayer = 0;
+
+function pieceMarkup(p) {
+  // If you stored just filenames like "busPiece.png", they live under Images/
+  const src = p.pieceFile ? `Images/${p.pieceFile}` : "";
+  return src ? `<img src="${src}" alt="${p.name} piece" />` : "🎲";
+}
 
 function renderSidebar() {
   const sidebar = document.getElementById("playerSidebar");
@@ -300,13 +335,14 @@ function renderSidebar() {
         <div class="player-name">${p.name}</div>
         <div class="player-balance">💵 $${p.balance}</div>
       </div>
-      <div class="player-piece">${p.piece}</div>
+      <div class="player-piece">${pieceMarkup(p)}</div>
     `;
     sidebar.appendChild(card);
   });
 }
 renderSidebar();
 
+/* ---- Popup helper ---- */
 function showPopup(message, color="#00bfff") {
   const popup = document.getElementById("popup");
   popup.textContent = message;
@@ -315,7 +351,7 @@ function showPopup(message, color="#00bfff") {
   setTimeout(() => popup.classList.remove("show"), 2000);
 }
 
-// Button actions
+/* ---- Buttons ---- */
 document.getElementById("rollBtn").onclick = () => {
   const roll = Math.floor(Math.random() * 6) + 1;
   document.getElementById("diceDisplay").textContent = `🎲 ${roll}`;
