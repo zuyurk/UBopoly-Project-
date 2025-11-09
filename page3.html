@@ -18,6 +18,16 @@
     overflow: hidden;
   }
 
+  .center-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+
   .game-container {
     display: grid;
     grid-template-columns: 22% 53% 25%;
@@ -80,6 +90,7 @@
     box-shadow: 0 0 30px rgba(0, 150, 255, 0.5);
     overflow: hidden;
   }
+
   .tile {
     display: flex; align-items: center; justify-content: center;
     border: 1px solid rgba(255, 255, 255, 0.2);
