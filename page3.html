@@ -95,14 +95,33 @@
   }
 
   .tile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: clamp(8px, 0.9vw, 13px);
-    text-align: center;
-    padding: 3px;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: clamp(8px, 0.9vw, 13px);
+  text-align: center;
+  padding: 3px;
+  cursor: pointer;                 /* Make all tiles clickable */
+  transition: all 0.25s ease;      /* Smooth hover effect */
+  user-select: none;
+}
+
+/* Hover effect for all tiles */
+.tile:hover {
+  transform: scale(1.06);
+  z-index: 5;
+  background: rgba(0, 200, 255, 0.2);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+}
+
+/* Active (clicked) effect */
+.tile:active {
+  transform: scale(0.98);
+  background: rgba(0, 150, 255, 0.35);
+  box-shadow: 0 0 20px rgba(0, 150, 255, 0.8);
+}
+
 
   .corner { font-weight: bold; background: linear-gradient(145deg, #007bff, #001f5a); color: white; }
   .chance { background: #a78b1d; color: #fff; }
@@ -341,6 +360,24 @@ function renderSidebar() {
   });
 }
 renderSidebar();
+
+/* ---- Make Tiles Clickable ---- */
+document.querySelectorAll(".tile").forEach(tile => {
+  tile.addEventListener("click", () => {
+    const name = tile.textContent.trim();
+    showPopup(`${players[activePlayer].name} clicked ${name}!`, "#00bfff");
+    console.log(`${players[activePlayer].name} selected tile: ${name}`);
+  });
+
+  tile.addEventListener("mouseenter", () => {
+    tile.style.filter = "brightness(1.3)";
+  });
+
+  tile.addEventListener("mouseleave", () => {
+    tile.style.filter = "brightness(1)";
+  });
+});
+
 
 /* ---- Popup helper ---- */
 function showPopup(message, color="#00bfff") {
