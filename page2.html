@@ -26,68 +26,29 @@
       position:absolute; top:14px; left:14px; display:inline-flex; align-items:center; gap:8px;
       padding:10px 14px; border-radius:12px; background:#ffffffcc; color:#0b5fbf; border:2px solid #d5e6ff;
       box-shadow:0 6px 16px rgba(0,0,0,.12); cursor:pointer; font-weight:700; text-decoration:none;
-      transition:transform .12s, box-shadow .12s, background .12s, color .12s, border-color .12s;
     }
-    .back-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(0,0,0,.18); background:#fff; border-color:#b7d2ff; }
-    .back-btn:active{ transform:translateY(0) }
-    .back-btn svg{ width:18px; height:18px; }
-
-    .subtitle{ font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#0b5fbf;
-      text-shadow:0 2px 0 #ffffff66, 0 4px 18px rgba(0,0,0,.15); font-size:clamp(14px,2.8vw,32px); }
-
+    .subtitle{ font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#0b5fbf; font-size:clamp(14px,2.8vw,32px); }
     .name-row{ width:min(90%,720px); margin:0 auto; }
     .name-input{
       width:100%; font-size:clamp(14px,2.4vw,22px); padding:14px 16px; border-radius:14px; border:2px solid rgba(0,0,0,.1);
-      outline:none; background:#ffffffd9; box-shadow:0 8px 18px rgba(0,0,0,.12); transition:border-color .15s, box-shadow .15s;
+      outline:none; background:#ffffffd9; box-shadow:0 8px 18px rgba(0,0,0,.12);
     }
-    .name-input::placeholder{ color:#6b7280 }
-    .name-input:focus{ border-color:var(--accent); box-shadow:0 10px 24px rgba(0,0,0,.16), 0 0 0 3px var(--accent-soft) }
-
     .pieces-grid{
       width:min(90%,720px); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr);
       gap:clamp(12px,2vw,20px); justify-items:center;
     }
-    .piece{
-      width:100%; aspect-ratio:1/1; border-radius:14px; background:var(--tile); border:3px dashed #c6bda7; box-shadow:var(--shadow);
-      display:grid; place-items:center; cursor:pointer; transition:transform .12s, box-shadow .12s, border-color .12s, background .12s, filter .12s; overflow:hidden;
-    }
-    .piece:hover{ transform:translateY(-3px); box-shadow:0 16px 32px rgba(0,0,0,.22); filter:saturate(1.03); }
-    .piece.selected{ border-style:solid; border-color:var(--accent); background:#fff; box-shadow:0 0 0 4px var(--accent-soft), 0 16px 32px rgba(0,0,0,.22); }
-    .piece img{ width:80%; height:80%; object-fit:contain; pointer-events:none; user-select:none; filter:drop-shadow(0 6px 12px rgba(0,0,0,.18)); }
-
-    /* Unavailable (already taken by another player) */
-    .piece.unavailable,
-    .piece:disabled{
-      opacity:.45; cursor:not-allowed; filter:grayscale(90%);
-      border-style:dashed; transform:none !important;
-    }
-
-    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
-
-    .actions{ width:min(90%,720px); margin-top:clamp(8px,2vw,16px); display:flex; justify-content:center; }
-    .btn-continue{
-      appearance:none; border:none; cursor:pointer; padding:14px 24px; border-radius:14px;
-      background:linear-gradient(180deg, var(--accent), #0b5fbf); color:#fff; font-weight:800; letter-spacing:.04em;
-      box-shadow:0 10px 24px rgba(0,0,0,.18); transition:transform .12s, box-shadow .12s, filter .12s, opacity .12s;
-    }
-    .btn-continue:hover{ transform:translateY(-2px); box-shadow:0 16px 36px rgba(0,0,0,.24); filter:saturate(1.05); }
-    .btn-continue:active{ transform:translateY(0); box-shadow:0 8px 18px rgba(0,0,0,.18); }
-    .btn-continue[disabled]{ opacity:.6; cursor:not-allowed; }
-
-    @media(max-width:800px){ .pieces-grid{ grid-template-columns:repeat(2,1fr) } }
-    @media(max-width:640px){ .stage{ width:98vw; aspect-ratio:7/5 } .sky{ inset:8px } .back-btn{ top:10px; left:10px; padding:10px 12px } }
+    .piece{ width:100%; aspect-ratio:1/1; border-radius:14px; background:var(--tile); border:3px dashed #c6bda7; box-shadow:var(--shadow);
+      display:grid; place-items:center; cursor:pointer; transition:transform .12s, box-shadow .12s, border-color .12s, background .12s, filter .12s; overflow:hidden;}
+    .piece.selected{ border-style:solid; border-color:var(--accent); background:#fff; box-shadow:0 0 0 4px var(--accent-soft); }
+    .piece img{ width:80%; height:80%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,.18)); }
+    .actions{ width:min(90%,720px); display:flex; justify-content:center; }
+    .btn-continue{ padding:14px 24px; border-radius:14px; background:linear-gradient(180deg,#0b5fbf,#074aa0); color:#fff; font-weight:800; border:none; cursor:pointer; }
   </style>
 </head>
 <body>
   <div class="stage" role="main" aria-label="UBHACKOPOLY Player Setup">
     <div class="sky">
-      <button class="back-btn" id="backBtn" aria-label="Go back">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Back
-      </button>
-
+      <a class="back-btn" href="page1.html">← Back</a>
       <div class="subtitle" id="subtitle">Player Setup</div>
 
       <div class="name-row">
@@ -95,131 +56,87 @@
       </div>
 
       <div class="pieces-grid" role="group" aria-label="Choose your piece">
-        <button class="piece" data-piece="busPiece.png" aria-label="Bus piece">
-          <img src="Images/busPiece.png" alt="Bus piece icon" />
-          <span class="sr-only">Bus</span>
-        </button>
-        <button class="piece" data-piece="wingPiece.png" aria-label="Wing piece">
-          <img src="Images/wingPiece.png" alt="Wing piece icon" />
-          <span class="sr-only">Wing</span>
-        </button>
-        <button class="piece" data-piece="mascotPiece.png" aria-label="Mascot piece">
-          <img src="Images/mascotPiece.png" alt="Mascot piece icon" />
-          <span class="sr-only">Mascot</span>
-        </button>
-        <button class="piece" data-piece="turkeyPiece.png" aria-label="Turkey piece">
-          <img src="Images/turkeyPiece.png" alt="Turkey piece icon" />
-          <span class="sr-only">Turkey</span>
-        </button>
+        <button class="piece" data-piece="busPiece.png"><img src="Images/busPiece.png" alt="Bus" /></button>
+        <button class="piece" data-piece="wingPiece.png"><img src="Images/wingPiece.png" alt="Wing" /></button>
+        <button class="piece" data-piece="mascotPiece.png"><img src="Images/mascotPiece.png" alt="Mascot" /></button>
+        <button class="piece" data-piece="turkeyPiece.png"><img src="Images/turkeyPiece.png" alt="Turkey" /></button>
       </div>
 
       <div class="actions">
-        <button class="btn-continue" id="continueBtn" aria-label="Continue">Continue</button>
+        <button class="btn-continue" id="continueBtn">Continue</button>
       </div>
     </div>
   </div>
 
-  <script>
-    // --- Read player count from URL (?count=2/3/4)
-    const params = new URLSearchParams(window.location.search);
-    const totalPlayers = Math.max(1, parseInt(params.get('count') || '1', 10));
+<script>
+  const API = (location.protocol === "file:" || location.port !== "5000")
+    ? "http://127.0.0.1:5000"
+    : location.origin;
 
-    // Collected players
-    const players = []; // [{ name, piece }, ...]
-    let i = 0; // current player index
+  const params = new URLSearchParams(window.location.search);
+  const totalPlayers = Math.max(1, parseInt(params.get('count') || '1', 10));
+  const players = [];
+  let i = 0;
+  let selectedPiece = null;
 
-    // Elements
-    const subtitle = document.getElementById('subtitle');
-    const usernameEl = document.getElementById('username');
-    const pieceButtons = Array.from(document.querySelectorAll('.piece'));
-    const continueBtn = document.getElementById('continueBtn');
+  const subtitle = document.getElementById('subtitle');
+  const usernameEl = document.getElementById('username');
+  const pieceButtons = Array.from(document.querySelectorAll('.piece'));
 
-    let selectedPiece = null;
-
-    // Helper: which pieces are already taken by other players (exclude current index)
-    function usedPieces(exceptIndex) {
-      const set = new Set();
-      players.forEach((p, idx) => {
-        if (idx !== exceptIndex && p?.piece) set.add(p.piece);
-      });
-      return set;
-    }
-
-    // Render current step and enforce availability
-    function renderStep() {
-      subtitle.textContent = `Player Setup (${i + 1} / ${totalPlayers})`;
-
-      // Preload existing input (if any)
-      const existing = players[i];
-      usernameEl.value = existing?.name || '';
-      selectedPiece = existing?.piece || null;
-
-      // Compute pieces used by other players
-      const taken = usedPieces(i);
-
-      // Sync button states
-      pieceButtons.forEach(btn => {
-        const piece = btn.dataset.piece;
-        const isSelectedByOthers = taken.has(piece);
-        const isCurrentSelection = (piece === selectedPiece);
-
-        // Disable if taken by others; allow if it's the current player's previous choice
-        const disabled = isSelectedByOthers && !isCurrentSelection;
-        btn.disabled = disabled;
-        btn.classList.toggle('unavailable', disabled);
-
-        // Visual selection state
-        btn.classList.toggle('selected', piece === selectedPiece);
-      });
-
-      usernameEl.focus();
-    }
-
-    // Piece selection (ignore clicks on disabled/unavailable)
+  function renderStep() {
+    subtitle.textContent = `Player Setup (${i + 1} / ${totalPlayers})`;
+    usernameEl.value = players[i]?.name || '';
+    selectedPiece = players[i]?.piece || null;
     pieceButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.disabled) return; // cannot select a taken piece
-        pieceButtons.forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedPiece = btn.dataset.piece;
+      const p = btn.dataset.piece;
+      const takenElsewhere = players.some((pp, idx) => idx !== i && pp?.piece === p);
+      btn.disabled = takenElsewhere;
+      btn.classList.toggle('selected', selectedPiece === p);
+      btn.style.opacity = takenElsewhere ? .45 : 1;
+    });
+    usernameEl.focus();
+  }
+
+  pieceButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.disabled) return;
+      pieceButtons.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedPiece = btn.dataset.piece;
+    });
+  });
+
+  document.getElementById('continueBtn').addEventListener('click', async () => {
+    const name = usernameEl.value.trim();
+    if (!name || !selectedPiece) { alert('Please enter a name and pick a piece.'); return; }
+    players[i] = { name, piece: selectedPiece };
+
+    if (i + 1 < totalPlayers) {
+      i += 1;
+      renderStep();
+      return;
+    }
+
+    // Persist locally (fallback)
+    sessionStorage.setItem('players', JSON.stringify(players));
+    sessionStorage.setItem('playerCount', String(totalPlayers));
+
+    // POST to backend /init_players (best effort)
+    try {
+      await fetch(`${API}/init_players`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ players })
       });
-    });
+    } catch (e) {
+      // If backend unavailable, continue anyway (page3 will use sessionStorage)
+      console.warn("init_players failed:", e);
+    }
 
-    // Continue: save current, advance or finish
-    continueBtn.addEventListener('click', () => {
-      const name = usernameEl.value.trim();
-      if (!name || !selectedPiece) {
-        alert('Please enter a username and choose a piece.');
-        return;
-      }
-      players[i] = { name, piece: selectedPiece };
+    window.location.href = 'page3.html';
+  });
 
-      if (i + 1 < totalPlayers) {
-        i += 1;
-        // When moving to next player, they start with no piece selected
-        selectedPiece = players[i]?.piece || null;
-        renderStep();
-      } else {
-        // Finished: persist and go to page 3
-        sessionStorage.setItem('players', JSON.stringify(players));
-        sessionStorage.setItem('playerCount', String(totalPlayers));
-        window.location.href = 'page3.html';
-      }
-    });
-
-    // Back behavior: go to previous player, freeing the next player's choice from "taken" automatically
-    document.getElementById('backBtn').addEventListener('click', () => {
-      if (i > 0) {
-        i -= 1;
-        renderStep();
-      } else {
-        if (history.length > 1) history.back();
-        else window.location.href = 'page1.html';
-      }
-    });
-
-    // Initialize
-    renderStep();
-  </script>
+  renderStep();
+</script>
 </body>
 </html>

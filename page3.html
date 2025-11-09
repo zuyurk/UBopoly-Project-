@@ -4,12 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UBHACKOPOLY – Game Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
     height: 100%;
-    font-family: "Poppins", system-ui, sans-serif;
+    font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     background: radial-gradient(circle at top, #0b1335, #02040a 85%);
     color: #fff;
     display: flex;
@@ -26,23 +27,16 @@
     gap: 1rem;
   }
 
-  /* Sidebar */
-  .sidebar, .actions {
+  .sidebar {
     backdrop-filter: blur(18px);
     background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
-    padding: 1rem;
+    padding: 1rem 1rem 0.5rem;
     box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    overflow-y: auto;
   }
-
-  .sidebar h2 {
-    text-align: center;
-    font-size: clamp(1rem, 1.6vw, 1.3rem);
-    margin-bottom: 10px;
-    color: #00c0ff;
-    text-shadow: 0 0 10px rgba(0,180,255,0.8);
-  }
+  .sidebar h2 { text-align: left; font-size: 1.6rem; margin-bottom: 12px; color: #cfe8ff; text-shadow: 0 0 8px rgba(0,180,255,.5); }
 
   .player-card {
     background: rgba(255,255,255,0.08);
@@ -55,135 +49,96 @@
     align-items: center;
     transition: all .25s ease;
   }
-
   .player-card.active {
     background: linear-gradient(135deg, #007bff, #5e1fff);
     transform: scale(1.03);
     box-shadow: 0 0 14px #2196f3cc;
   }
+  .player-info { flex: 1; min-width: 0; }
+  .player-name { font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .player-balance { font-size: .95rem; opacity: .95; }
 
-  .player-info { flex: 1; }
-  .player-name { font-weight: 700; font-size: 1rem; }
-  .player-balance { font-size: .9rem; opacity: .9; }
-
-  .player-piece img { width: 36px; height: 36px; object-fit: contain; }
-
-  /* Monopoly-style board */
-  .board {
-    width: 700px;
-    height: 700px;
-    display: flex;
-    flex-direction: column;
-    background: radial-gradient(circle at center, #0a1f3c 30%, #00142e);
-    border: 6px solid #00aaff;
-    border-radius: 16px;
+  .board-wrap {
     position: relative;
-    margin: auto;
-    box-shadow: 0 0 40px rgba(0, 170, 255, 0.3);
-  }
-
-  .board-top,
-  .board-bottom {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .board-middle {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-  }
-
-  .board-left,
-  .board-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .tile {
-    width: 70px;
-    height: 70px;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    text-align: center;
-  }
-
-  .tile:hover {
-    background: rgba(0, 200, 255, 0.25);
-    transform: scale(1.05);
-  }
-
-  .tile.selected {
-    background: rgba(0,200,255,0.4);
-    box-shadow: 0 0 10px #00bfff;
-  }
-
-  .board-center {
-    flex: 1;
+    backdrop-filter: blur(18px);
     background: rgba(255, 255, 255, 0.06);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    margin: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: #00cfff;
-    font-size: 1.5rem;
-    font-weight: bold;
-    box-shadow: inset 0 0 20px rgba(0, 150, 255, 0.3);
+    border: 5px solid #00aaff;
+    border-radius: 18px;
+    box-shadow: 0 0 30px rgba(0,150,255,0.5);
+    overflow: hidden;
   }
+  .board { position: relative; width: 100%; height: 100%; background: radial-gradient(circle at center, #071b35 25%, #00142e 100%); }
 
-  /* Actions panel */
-  .actions {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+  .tiles { position: absolute; inset: 12px; display: grid; grid-template-columns: repeat(11, 1fr); grid-template-rows: repeat(11, 1fr); gap: 4px; }
+  .tile { display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.07); font-size:clamp(9px,.95vw,13px); text-align:center; padding:4px; border-radius:8px; }
+  .tile.landed { outline: 3px solid #00e5ff; box-shadow: 0 0 14px #00e5ff; }
+  .corner { font-weight: 800; background: linear-gradient(145deg, #007bff, #001f5a); color: #fff; }
+  .chance { background: #a78b1d; color: #fff; }
+  .community { background: #007e33; color: #fff; }
+  .bus { background: #5f5f5f; color: #fff; }
+  .fees { background: #9c174d; color: #fff; }
 
-  .actions button {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #007bff, #4a00e0);
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.25s ease;
-  }
+  /* Corners */
+  #GO { grid-row: 11; grid-column: 11; }
+  #JustVisiting { grid-row: 11; grid-column: 1; }
+  #FreeParking { grid-row: 1; grid-column: 1; }
+  #GoToAcademicViolation { grid-row: 1; grid-column: 11; }
 
-  .actions button:hover {
-    background: linear-gradient(135deg, #00b0ff, #5e1fff);
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(90,50,255,0.6);
-  }
+  /* Bottom row */
+  #Baird { grid-row: 11; grid-column: 10; }
+  #CommunityChest1 { grid-row: 11; grid-column: 9; }
+  #Clements { grid-row: 11; grid-column: 8; }
+  #SAFees { grid-row: 11; grid-column: 7; }
+  #NorthBus { grid-row: 11; grid-column: 6; }
+  #Baldy { grid-row: 11; grid-column: 5; }
+  #Chance1 { grid-row: 11; grid-column: 4; }
+  #Jacobs { grid-row: 11; grid-column: 3; }
+  #Park { grid-row: 11; grid-column: 2; }
 
-  .popup {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #007bff, #00b3ff);
-    padding: 15px 22px;
-    border-radius: 12px;
-    font-weight: 600;
-    box-shadow: 0 0 25px rgba(0,180,255,0.5);
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.35s ease;
-  }
+  /* Left column */
+  #OBrian { grid-row: 10; grid-column: 1; }
+  #MTBanks { grid-row: 9; grid-column: 1; }
+  #Norton { grid-row: 8; grid-column: 1; }
+  #Knox { grid-row: 7; grid-column: 1; }
+  #SouthBus { grid-row: 6; grid-column: 1; }
+  #Bonner { grid-row: 5; grid-column: 1; }
+  #CommunityChest2 { grid-row: 4; grid-column: 1; }
+  #Talbert { grid-row: 3; grid-column: 1; }
+  #Hochstetter { grid-row: 2; grid-column: 1; }
 
+  /* Top row */
+  #Cooke { grid-row: 1; grid-column: 2; }
+  #Chance2 { grid-row: 1; grid-column: 3; }
+  #Fronczak { grid-row: 1; grid-column: 4; }
+  #NSC { grid-row: 1; grid-column: 5; }
+  #DowntownBus { grid-row: 1; grid-column: 6; }
+  #Ketter { grid-row: 1; grid-column: 7; }
+  #Slee { grid-row: 1; grid-column: 8; }
+  #Valmar { grid-row: 1; grid-column: 9; }
+  #GoToJail { grid-row: 1; grid-column: 11; }
+
+  /* Right column */
+  #TheCommons { grid-row: 2; grid-column: 11; }
+  #CenterForTheArts { grid-row: 3; grid-column: 11; }
+  #CommunityChest3 { grid-row: 4; grid-column: 11; }
+  #AlumniArena { grid-row: 5; grid-column: 11; }
+  #ShoppingBus { grid-row: 6; grid-column: 11; }
+  #Chance3 { grid-row: 7; grid-column: 11; }
+  #Davis { grid-row: 8; grid-column: 11; }
+  #TextbookFees { grid-row: 9; grid-column: 11; }
+  #Jarvis { grid-row: 10; grid-column: 11; }
+
+  /* Tokens */
+  .token { position:absolute; width: clamp(22px, 2.8vw, 32px); height: clamp(22px, 2.8vw, 32px); transform: translate(-50%, -50%); z-index: 15; transition: left .2s linear, top .2s linear; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
+  .token img { width: 100%; height: 100%; object-fit: contain; }
+  .chip  { width:100%; height:100%; border-radius:50%; border:2px solid #fff; }
+
+  .actions { backdrop-filter: blur(18px); background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 1.5rem; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.3); }
+  .actions button { width:100%; padding:14px; border:none; border-radius:12px; background:linear-gradient(135deg,#007bff,#4a00e0); color:#fff; font-weight:700; cursor:pointer; box-shadow:0 0 18px rgba(0,136,255,.3); transition: transform .2s; }
+  .actions button:hover { transform: translateY(-2px); }
+  .dice-display { text-align:center; font-weight:700; opacity:.9; min-height:1.2em; }
+
+  .popup { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #007bff, #00b3ff); color: white; padding: 15px 22px; border-radius: 12px; font-weight: 600; font-size: 1rem; box-shadow: 0 0 25px rgba(0, 180, 255, 0.5); opacity: 0; transform: translateY(-20px); transition: all .35s ease; z-index: 999; }
   .popup.show { opacity: 1; transform: translateY(0); }
 </style>
 </head>
@@ -191,58 +146,65 @@
 <div class="game-container">
   <div class="sidebar" id="playerSidebar"><h2>🎮 Players</h2></div>
 
-  <div class="board" id="board">
-    <div class="board-top">
-      <div class="tile">GO</div>
-      <div class="tile">Baird</div>
-      <div class="tile">Clements</div>
-      <div class="tile">Jacobs</div>
-      <div class="tile">Baldy</div>
-      <div class="tile">Furnas</div>
-      <div class="tile">Cooke</div>
-      <div class="tile">Slee</div>
-      <div class="tile">Ketter</div>
-    </div>
+  <div class="board-wrap">
+    <div class="board" id="board">
+      <div class="tiles">
+        <!-- Corners -->
+        <div class="tile corner" id="GO">GO</div>
+        <div class="tile corner" id="JustVisiting">Just Visiting</div>
+        <div class="tile corner" id="FreeParking">Free Parking</div>
+        <div class="tile corner" id="GoToAcademicViolation">Go to Academic Violation</div>
 
-    <div class="board-middle">
-      <div class="board-left">
-        <div class="tile">Capen</div>
-        <div class="tile">Student Union</div>
-        <div class="tile">Math</div>
-        <div class="tile">Science</div>
-        <div class="tile">CFA</div>
+        <!-- Bottom row -->
+        <div class="tile" id="Baird">Baird</div>
+        <div class="tile community" id="CommunityChest1">Community Chest</div>
+        <div class="tile" id="Clements">Clements</div>
+        <div class="tile fees" id="SAFees">SA Fees</div>
+        <div class="tile bus" id="NorthBus">North Bus</div>
+        <div class="tile" id="Baldy">Baldy</div>
+        <div class="tile chance" id="Chance1">Chance</div>
+        <div class="tile" id="Jacobs">Jacobs</div>
+        <div class="tile" id="Park">Park</div>
+
+        <!-- Left column -->
+        <div class="tile" id="OBrian">O'Brian</div>
+        <div class="tile" id="MTBanks">M &amp; T Banks</div>
+        <div class="tile" id="Norton">Norton</div>
+        <div class="tile" id="Knox">Knox</div>
+        <div class="tile bus" id="SouthBus">South Bus</div>
+        <div class="tile" id="Bonner">Bonner</div>
+        <div class="tile community" id="CommunityChest2">Community Chest</div>
+        <div class="tile" id="Talbert">Talbert</div>
+        <div class="tile" id="Hochstetter">Hochstetter</div>
+
+        <!-- Top row -->
+        <div class="tile" id="Cooke">Cooke</div>
+        <div class="tile chance" id="Chance2">Chance</div>
+        <div class="tile" id="Fronczak">Fronczak</div>
+        <div class="tile" id="NSC">NSC</div>
+        <div class="tile bus" id="DowntownBus">Downtown Bus</div>
+        <div class="tile" id="Ketter">Ketter</div>
+        <div class="tile" id="Slee">Slee</div>
+        <div class="tile" id="Valmar">Valmar</div>
+        <div class="tile corner" id="GoToJail">Go To Jail</div>
+
+        <!-- Right column -->
+        <div class="tile" id="TheCommons">The Commons</div>
+        <div class="tile" id="CenterForTheArts">Center for the Arts</div>
+        <div class="tile community" id="CommunityChest3">Community Chest</div>
+        <div class="tile" id="AlumniArena">Alumni Arena</div>
+        <div class="tile bus" id="ShoppingBus">Shopping Bus</div>
+        <div class="tile chance" id="Chance3">Chance</div>
+        <div class="tile" id="Davis">Davis</div>
+        <div class="tile fees" id="TextbookFees">Textbook Fees</div>
+        <div class="tile" id="Jarvis">Jarvis</div>
       </div>
-
-      <div class="board-center" id="center">
-        <h2>🎲 UBopoly</h2>
-        <p id="turn-info">Player 1’s turn</p>
-      </div>
-
-      <div class="board-right">
-        <div class="tile">Davis</div>
-        <div class="tile">Bell</div>
-        <div class="tile">Lockwood</div>
-        <div class="tile">O’Brien</div>
-        <div class="tile">Park</div>
-      </div>
-    </div>
-
-    <div class="board-bottom">
-      <div class="tile">South Lake</div>
-      <div class="tile">Clemens</div>
-      <div class="tile">Silverman</div>
-      <div class="tile">UB Stadium</div>
-      <div class="tile">C3</div>
-      <div class="tile">Fronczak</div>
-      <div class="tile">Talbert</div>
-      <div class="tile">Spaulding</div>
-      <div class="tile">Founders</div>
     </div>
   </div>
 
   <div class="actions">
     <button id="rollBtn">🎲 Roll Dice</button>
-    <div class="dice-display" id="diceDisplay" style="text-align:center;">–</div>
+    <div class="dice-display" id="diceDisplay">–</div>
     <button id="buyBtn">💰 Buy Property</button>
     <button id="endTurnBtn">➡️ End Turn</button>
     <button id="resetBtn">🔄 Reset Game</button>
@@ -252,122 +214,175 @@
 <div class="popup" id="popup">Notification</div>
 
 <script>
-/* ========= API helper ========= */
-const API =
-  location.hostname === "localhost" || location.hostname === "127.0.0.1"
-    ? "http://127.0.0.1:5000"
-    : `${location.origin}`;
+/* ===== API helper ===== */
+const API = (location.protocol === "file:" || location.port !== "5000")
+  ? "http://127.0.0.1:5000"
+  : location.origin;
 
-async function api(path, options = {}) {
-  try {
-    const res = await fetch(`${API}${path}`, {
-      headers: { "Content-Type": "application/json" },
-      ...options,
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || res.statusText);
-    return data;
-  } catch (err) {
-    showPopup(`⚠️ ${err.message}`, "#ff4b5c");
-    throw err;
-  }
+function showPopup(msg, color = "linear-gradient(135deg, #007bff, #00b3ff)") {
+  const p = document.getElementById("popup");
+  p.textContent = msg;
+  p.style.background = color;
+  p.classList.add("show");
+  setTimeout(() => p.classList.remove("show"), 2200);
 }
 
-/* ========= UI State ========= */
-let players = [{ name: "Player 1", balance: 1500 }];
-let activePlayer = 0;
+async function api(path, options = {}) {
+  const res = await fetch(`${API}${path}`, { headers: { "Content-Type": "application/json" }, ...options });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
 
-/* ========= Sidebar ========= */
+/* ===== State ===== */
+let game = { active_player: 0, players: [] };
+const colors = ["#00bfff", "#ff4b5c", "#ffd700", "#00ff88", "#ff9f1c", "#9b5de5"];
+
+/* ===== UI ===== */
 function renderSidebar() {
-  const sidebar = document.getElementById("playerSidebar");
-  sidebar.innerHTML = `<h2>🎮 Players</h2>`;
-  players.forEach((p, i) => {
+  const side = document.getElementById("playerSidebar");
+  side.innerHTML = `<h2>🎮 Players</h2>`;
+  (game.players || []).forEach((p, i) => {
     const card = document.createElement("div");
-    card.className = "player-card" + (i === activePlayer ? " active" : "");
-    card.style.borderLeftColor = "#00bfff";
+    card.className = "player-card" + (i === game.active_player ? " active" : "");
+    card.style.borderLeftColor = colors[i % colors.length];
     card.innerHTML = `
       <div class="player-info">
         <div class="player-name">${p.name}</div>
         <div class="player-balance">💵 $${p.balance}</div>
-      </div>
-    `;
-    sidebar.appendChild(card);
+      </div>`;
+    side.appendChild(card);
   });
 }
-renderSidebar();
 
-/* ========= Popup Helper ========= */
-function showPopup(msg, color = "#00bfff") {
-  const popup = document.getElementById("popup");
-  popup.textContent = msg;
-  popup.style.background = `linear-gradient(135deg, ${color}, #007bff)`;
-  popup.classList.add("show");
-  setTimeout(() => popup.classList.remove("show"), 2000);
+function ensureTokens() {
+  const board = document.getElementById("board");
+  [...document.querySelectorAll(".token")].forEach(el => el.remove());
+  (game.players || []).forEach((p, i) => {
+    const t = document.createElement("div");
+    t.className = "token";
+    t.dataset.index = i;
+    if (p.piece) t.innerHTML = `<img src="Images/${p.piece}" alt="${p.name} piece"/>`;
+    else t.innerHTML = `<div class="chip" style="background:${colors[i % colors.length]}"></div>`;
+    board.appendChild(t);
+  });
 }
 
-/* ========= Board Click ========= */
-let selectedProperty = null;
-document.querySelectorAll(".tile").forEach(tile => {
-  tile.addEventListener("click", () => {
-    document.querySelectorAll(".tile").forEach(t => t.classList.remove("selected"));
-    tile.classList.add("selected");
-    selectedProperty = tile.textContent.trim();
-    showPopup(`Selected: ${selectedProperty}`, "#00e5ff");
+function positionTokens() {
+  const boardRect = document.getElementById("board").getBoundingClientRect();
+  const inset = 12, w = boardRect.width - inset * 2, h = boardRect.height - inset * 2;
+  document.querySelectorAll(".token").forEach(t => {
+    const i = +t.dataset.index;
+    const p = game.players[i];
+    const [x, y] = p.coords || [50, 50];
+    const offs = [{dx:0,dy:0},{dx:8,dy:-8},{dx:-8,dy:8},{dx:8,dy:8}][i % 4];
+    t.style.left = `${inset + (x/100)*w + offs.dx}px`;
+    t.style.top  = `${inset + (y/100)*h + offs.dy}px`;
   });
-});
+}
+window.addEventListener("resize", positionTokens);
 
-/* ========= Sync State ========= */
-async function syncState() {
+function clearHighlights(){ document.querySelectorAll(".tile.landed").forEach(el => el.classList.remove("landed")); }
+function highlightByName(name) {
+  const idMap = {
+    "GO":"GO","Just Visiting":"JustVisiting","Free Parking":"FreeParking",
+    "Go to Academic Violation":"GoToAcademicViolation","Go To Jail":"GoToJail",
+    "Baird":"Baird","Clements":"Clements","Baldy":"Baldy","Jacobs":"Jacobs","Park":"Park",
+    "O'Brian":"OBrian","M & T Banks":"MTBanks","Norton":"Norton","Knox":"Knox",
+    "Bonner":"Bonner","Talbert":"Talbert","Hochstetter":"Hochstetter",
+    "Cooke":"Cooke","Fronczak":"Fronczak","NSC":"NSC",
+    "Ketter":"Ketter","Slee":"Slee","Valmar":"Valmar",
+    "The Commons":"TheCommons","Center for the Arts":"CenterForTheArts","Alumni Arena":"AlumniArena",
+    "Davis":"Davis","Jarvis":"Jarvis","North Bus":"NorthBus","South Bus":"SouthBus",
+    "Downtown Bus":"DowntownBus","Shopping Bus":"ShoppingBus",
+    "SA Fees":"SAFees","Textbook Fees":"TextbookFees"
+  };
+  clearHighlights();
+  const id = idMap[name];
+  if (id) document.getElementById(id)?.classList.add("landed");
+  else if (name === "Chance") ["Chance1","Chance2","Chance3"].forEach(cid => document.getElementById(cid)?.classList.add("landed"));
+  else if (name === "Community Chest") ["CommunityChest1","CommunityChest2","CommunityChest3"].forEach(cid => document.getElementById(cid)?.classList.add("landed"));
+}
+
+/* ===== Self-healing bootstrap ===== */
+function storedPlayers() {
+  try { return JSON.parse(sessionStorage.getItem('players') || '[]'); } catch { return []; }
+}
+function isPlaceholderRoster(list) {
+  if (!Array.isArray(list) || list.length === 0) return true;
+  return list.every(p => /^Player\s+\d+$/i.test(p?.name || ""));
+}
+
+async function refreshFromServer() {
+  let serverOK = true;
   try {
-    const data = await api("/state");
-    players = data.players.map(p => ({ name: p.name, balance: p.balance }));
-    activePlayer = data.active_player ?? 0;
-    renderSidebar();
-  } catch {
-    console.log("Backend not reachable.");
+    game = await api("/state");
+  } catch (e) {
+    serverOK = false;
+    game = { active_player: 0, players: [] };
   }
-}
-syncState();
 
-/* ========= Buttons ========= */
-document.getElementById("rollBtn").onclick = async () => {
-  try {
-    const data = await api("/roll", { method: "POST" });
-    document.getElementById("diceDisplay").textContent = `🎲 ${data.roll}`;
-    showPopup(`You rolled a ${data.roll}!`, "#00ffcc");
-  } catch {}
-};
+  // If server is up but has no real players, push sessionStorage roster
+  if (serverOK && (!game.players || game.players.length === 0 || isPlaceholderRoster(game.players))) {
+    const local = storedPlayers();
+    if (local.length) {
+      try {
+        await api("/init_players", { method: "POST", body: JSON.stringify({ players: local }) });
+        game = await api("/state");
+      } catch { /* fallback handled below */ }
+    }
+  }
+
+  // If still empty and we have local players (server maybe down), emulate minimal state
+  if (!game.players || game.players.length === 0) {
+    const local = storedPlayers();
+    if (local.length) {
+      game = {
+        active_player: 0,
+        players: local.map(p => ({ name: p.name, balance: 1500, piece: p.piece, coords: [50,50], position: 0 }))
+      };
+    }
+  }
+
+  renderSidebar(); ensureTokens(); positionTokens();
+}
+
+async function doRoll() {
+  const data = await api("/roll", { method: "POST" });
+  document.getElementById("diceDisplay").textContent = `🎲 ${data.roll}`;
+  showPopup(data.message, "linear-gradient(135deg,#00ffcc,#00b3ff)");
+  game = data; renderSidebar(); ensureTokens(); positionTokens();
+  if (data.landed) highlightByName(data.landed);
+}
+
+/* ===== Buttons ===== */
+document.getElementById("rollBtn").onclick = () => doRoll().catch(e => showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"));
 
 document.getElementById("buyBtn").onclick = async () => {
-  if (!selectedProperty) {
-    showPopup("Select a property first!", "#ffb300");
-    return;
-  }
   try {
-    const data = await api("/buy", {
-      method: "POST",
-      body: JSON.stringify({ property: selectedProperty }),
-    });
-    showPopup(data.message, "#ffb300");
-    await syncState();
-  } catch {}
+    const data = await api("/buy", { method: "POST", body: JSON.stringify({}) });
+    showPopup(data.message || "Attempted to buy.", "linear-gradient(135deg,#ffb300,#ff8a00)");
+    game = data; renderSidebar();
+  } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
 };
 
 document.getElementById("endTurnBtn").onclick = async () => {
   try {
     const data = await api("/end_turn", { method: "POST" });
-    showPopup(`Next Player: ${data.next_player}`, "#4a9eff");
-    await syncState();
-  } catch {}
+    showPopup(`Next: ${data.next_player}`, "linear-gradient(135deg,#4a9eff,#5e1fff)");
+    game = data; renderSidebar();
+  } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
 };
 
 document.getElementById("resetBtn").onclick = async () => {
   try {
     const data = await api("/reset", { method: "POST" });
-    showPopup(data.message, "#00ff88");
-    await syncState();
-  } catch {}
+    showPopup("Game reset!", "linear-gradient(135deg,#ff4b5c,#ff6f91)");
+    game = data; renderSidebar(); ensureTokens(); positionTokens(); clearHighlights();
+  } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
 };
+
+/* ===== Init ===== */
+refreshFromServer();
 </script>
 </body>
 </html>
