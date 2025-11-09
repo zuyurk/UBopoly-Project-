@@ -1,57 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UBHACKOPOLY – Game Board</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
     height: 100%;
-    font-family: Arial, sans-serif;
+    font-family: "Poppins", sans-serif;
+    background: radial-gradient(circle at top, #0b1335, #02040a 85%);
+    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(180deg, #d7eaff, #b0d0f2);
     overflow: hidden;
   }
 
   .game-container {
     display: grid;
-    grid-template-columns: 20% 60% 20%;
-    grid-template-rows: 1fr;
-    width: 95vw;
-    height: 95vh;
-    gap: 10px;
+    grid-template-columns: 22% 53% 25%;
+    width: 96vw;
+    height: 96vh;
+    gap: 1rem;
   }
 
-  /* LEFT PANEL – Player info */
+  /* Sidebar (players) */
   .sidebar {
-    background: #f8fafc;
-    border: 3px solid #222;
-    border-radius: 12px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 8px;
+    backdrop-filter: blur(18px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
   }
-  .player-card {
-    background: #e9eef5;
-    border-radius: 8px;
-    padding: 8px;
-    border-left: 6px solid;
-  }
-  .player-card.active {
-    background: #fff3cd;
-    border-color: gold;
-    font-weight: bold;
-  }
-  .player-name { font-size: 1rem; }
-  .player-balance { font-size: 0.9rem; color: #333; }
 
-  /* MIDDLE – Board */
+  .sidebar h2 {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #00c0ff;
+    text-shadow: 0 0 10px rgba(0,180,255,0.8);
+  }
+
+  .player-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    padding: 0.8rem;
+    border-left: 5px solid;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .player-card.active {
+    background: linear-gradient(135deg, #007bff, #5e1fff);
+    transform: scale(1.03);
+    box-shadow: 0 0 14px #2196f3cc;
+  }
+
+  .player-info { flex: 1; }
+  .player-name { font-weight: 700; font-size: 1rem; }
+  .player-balance { font-size: 0.85rem; opacity: 0.9; }
+
+  /* The Board */
   .board {
     position: relative;
     display: grid;
@@ -59,83 +75,198 @@
     grid-template-rows: repeat(11, 1fr);
     width: 100%;
     height: 100%;
-    border: 4px solid #333;
-    background-color: #fff;
+    background: #00142e;
+    border: 5px solid #00aaff;
+    border-radius: 18px;
+    box-shadow: 0 0 30px rgba(0, 150, 255, 0.5);
   }
 
   .tile {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: calc(8px + 0.5vmin);
-    border: 1px solid #555;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: clamp(8px, 0.9vw, 13px);
     text-align: center;
-    padding: 2px;
+    padding: 3px;
   }
 
-  .corner { background-color: #1360cd; color: white; font-weight: bold; }
-  .chance { background-color: #ffeb3b; }
-  .community { background-color: #4caf50; color: white; }
-  .bus { background-color: #9e9e9e; color: white; }
-  .fees { background-color: #e91e63; color: white; }
-
-  .player-token {
-    position: absolute;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 0 6px rgba(0,0,0,.4);
-    transition: all 0.4s ease;
+  .corner {
+    font-weight: bold;
+    background: linear-gradient(145deg, #007bff, #001f5a);
+    color: white;
   }
+  .chance { background: #a78b1d; color: #fff; }
+  .community { background: #007e33; color: white; }
+  .bus { background: #5f5f5f; color: white; }
+  .fees { background: #9c174d; color: white; }
 
-  /* RIGHT PANEL – Actions */
+  /* Board layout (GO bottom-left clockwise) */
+  #go { grid-row: 11; grid-column: 1; }
+  #justVisiting { grid-row: 11; grid-column: 11; }
+  #freeParking { grid-row: 1; grid-column: 11; }
+  #goToJail { grid-row: 1; grid-column: 1; }
+
+  /* Bottom row */
+  #baird { grid-row: 11; grid-column: 2; }
+  #community1 { grid-row: 11; grid-column: 3; }
+  #clements { grid-row: 11; grid-column: 4; }
+  #saFees { grid-row: 11; grid-column: 5; }
+  #northBus { grid-row: 11; grid-column: 6; }
+  #baldy { grid-row: 11; grid-column: 7; }
+  #chance1 { grid-row: 11; grid-column: 8; }
+  #jacobs { grid-row: 11; grid-column: 9; }
+  #park { grid-row: 11; grid-column: 10; }
+
+  /* Right column */
+  #obrian { grid-row: 10; grid-column: 11; }
+  #mtBanks { grid-row: 9; grid-column: 11; }
+  #norton { grid-row: 8; grid-column: 11; }
+  #knox { grid-row: 7; grid-column: 11; }
+  #southBus { grid-row: 6; grid-column: 11; }
+  #bonner { grid-row: 5; grid-column: 11; }
+  #community2 { grid-row: 4; grid-column: 11; }
+  #talbert { grid-row: 3; grid-column: 11; }
+  #hochstetter { grid-row: 2; grid-column: 11; }
+
+  /* Top row */
+  #cooke { grid-row: 1; grid-column: 10; }
+  #chance2 { grid-row: 1; grid-column: 9; }
+  #fronczak { grid-row: 1; grid-column: 8; }
+  #nsc { grid-row: 1; grid-column: 7; }
+  #downtownBus { grid-row: 1; grid-column: 6; }
+  #ketter { grid-row: 1; grid-column: 5; }
+  #slee { grid-row: 1; grid-column: 4; }
+  #valmar { grid-row: 1; grid-column: 3; }
+  #furnas { grid-row: 1; grid-column: 2; }
+
+  /* Left column */
+  #theCommons { grid-row: 2; grid-column: 1; }
+  #centerArts { grid-row: 3; grid-column: 1; }
+  #community3 { grid-row: 4; grid-column: 1; }
+  #alumniArena { grid-row: 5; grid-column: 1; }
+  #shoppingBus { grid-row: 6; grid-column: 1; }
+  #chance3 { grid-row: 7; grid-column: 1; }
+  #davis { grid-row: 8; grid-column: 1; }
+  #textbookFees { grid-row: 9; grid-column: 1; }
+  #jarvis { grid-row: 10; grid-column: 1; }
+
+  /* Actions panel */
   .actions {
-    background: #f8fafc;
-    border: 3px solid #222;
-    border-radius: 12px;
+    backdrop-filter: blur(18px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-start;
-    padding: 12px;
-    gap: 10px;
+    gap: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
+
   .actions button {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     border: none;
-    border-radius: 8px;
-    background: #1360cd;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #007bff, #4a00e0);
     color: white;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: 0 0 18px rgba(0,136,255,0.3);
+    transition: all 0.3s ease;
   }
-  .actions button:hover { background: #1b76f2; transform: translateY(-2px); }
 
-  .dice-display {
-    font-size: 2rem;
-    margin-top: 8px;
+  .actions button:hover {
+    background: linear-gradient(135deg, #00b0ff, #5e1fff);
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(90,50,255,0.6);
+  }
+
+  /* Popup / notification */
+  .popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #007bff, #00b3ff);
+    color: white;
+    padding: 15px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 0 25px rgba(0, 180, 255, 0.5);
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.4s ease;
+    z-index: 999;
+  }
+
+  .popup.show {
+    opacity: 1;
+    transform: translateY(0);
   }
 
 </style>
 </head>
 <body>
-
 <div class="game-container">
-  <!-- LEFT: Player info -->
-  <div class="sidebar" id="playerSidebar"></div>
+  <div class="sidebar" id="playerSidebar"><h2>🎮 Players</h2></div>
 
-  <!-- MIDDLE: Game board -->
   <div class="board" id="board">
+    <!-- Corners -->
     <div class="tile corner" id="go">GO</div>
-    <div class="tile corner" id="freeParking">Free Parking</div>
-    <div class="tile corner" id="centerArts">Center for the Arts</div>
     <div class="tile corner" id="justVisiting">Just Visiting</div>
+    <div class="tile corner" id="freeParking">Free Parking</div>
+    <div class="tile corner" id="goToJail">Go To Jail</div>
+
+    <!-- Bottom row -->
+    <div class="tile" id="baird">Baird</div>
+    <div class="tile community" id="community1">Community Chest</div>
+    <div class="tile" id="clements">Clements</div>
+    <div class="tile fees" id="saFees">SA Fees</div>
+    <div class="tile bus" id="northBus">North Bus</div>
+    <div class="tile" id="baldy">Baldy</div>
+    <div class="tile chance" id="chance1">Chance</div>
+    <div class="tile" id="jacobs">Jacobs</div>
+    <div class="tile" id="park">Park</div>
+
+    <!-- Right -->
+    <div class="tile" id="obrian">O’Brian</div>
+    <div class="tile" id="mtBanks">M&T Banks</div>
+    <div class="tile" id="norton">Norton</div>
+    <div class="tile" id="knox">Knox</div>
+    <div class="tile bus" id="southBus">South Bus</div>
+    <div class="tile" id="bonner">Bonner</div>
+    <div class="tile community" id="community2">Community Chest</div>
+    <div class="tile" id="talbert">Talbert</div>
+    <div class="tile" id="hochstetter">Hochstetter</div>
+
+    <!-- Top -->
+    <div class="tile" id="cooke">Cooke</div>
+    <div class="tile chance" id="chance2">Chance</div>
+    <div class="tile" id="fronczak">Fronczak</div>
+    <div class="tile" id="nsc">NSC</div>
+    <div class="tile bus" id="downtownBus">Downtown Bus</div>
+    <div class="tile" id="ketter">Ketter</div>
+    <div class="tile" id="slee">Slee</div>
+    <div class="tile" id="valmar">Valmar</div>
+    <div class="tile" id="furnas">Furnas</div>
+
+    <!-- Left -->
+    <div class="tile" id="theCommons">The Commons</div>
+    <div class="tile" id="centerArts">Center for the Arts</div>
+    <div class="tile community" id="community3">Community Chest</div>
+    <div class="tile" id="alumniArena">Alumni Arena</div>
+    <div class="tile bus" id="shoppingBus">Shopping Bus</div>
+    <div class="tile chance" id="chance3">Chance</div>
+    <div class="tile" id="davis">Davis</div>
+    <div class="tile fees" id="textbookFees">Textbook Fees</div>
+    <div class="tile" id="jarvis">Jarvis</div>
   </div>
 
-  <!-- RIGHT: Action buttons -->
   <div class="actions">
     <button id="rollBtn">🎲 Roll Dice</button>
     <div class="dice-display" id="diceDisplay">–</div>
@@ -145,109 +276,65 @@
   </div>
 </div>
 
+<div class="popup" id="popup">Notification</div>
+
 <script>
-/* ------------------------------
-   SETUP
---------------------------------*/
-const players = JSON.parse(localStorage.getItem("players") || "[]");
-if (players.length === 0) {
-  alert("No player data found — returning to start!");
-  window.location.href = "page1.html";
-}
+const players = [
+  { name: "Player 1", color: "#00bfff", balance: 1500, piece: "🔵" },
+  { name: "Player 2", color: "#ff4b5c", balance: 1500, piece: "🔴" },
+  { name: "Player 3", color: "#ffd700", balance: 1500, piece: "🟡" },
+  { name: "Player 4", color: "#00ff88", balance: 1500, piece: "🟢" },
+];
+let activePlayer = 0;
 
-const colors = ["red", "blue", "green", "yellow"];
-const board = document.getElementById("board");
-const sidebar = document.getElementById("playerSidebar");
-const diceDisplay = document.getElementById("diceDisplay");
-
-// Assign starting info
-players.forEach((p, i) => {
-  p.balance = 1500;
-  p.position = 0;
-  p.color = colors[i];
-});
-
-/* ------------------------------
-   DISPLAY SIDEBAR
---------------------------------*/
-function renderSidebar(activeIndex = 0) {
-  sidebar.innerHTML = "";
+function renderSidebar() {
+  const sidebar = document.getElementById("playerSidebar");
+  sidebar.innerHTML = `<h2>🎮 Players</h2>`;
   players.forEach((p, i) => {
     const card = document.createElement("div");
     card.classList.add("player-card");
-    if (i === activeIndex) card.classList.add("active");
+    if (i === activePlayer) card.classList.add("active");
     card.style.borderLeftColor = p.color;
     card.innerHTML = `
-      <div class="player-name">${p.name}</div>
-      <div class="player-balance">💵 $${p.balance}</div>
+      <div class="player-info">
+        <div class="player-name">${p.name}</div>
+        <div class="player-balance">💵 $${p.balance}</div>
+      </div>
+      <div class="player-piece">${p.piece}</div>
     `;
     sidebar.appendChild(card);
   });
 }
+renderSidebar();
 
-/* ------------------------------
-   CREATE PLAYER TOKENS
---------------------------------*/
-const tokenMap = new Map();
-
-players.forEach((p) => {
-  const token = document.createElement("div");
-  token.classList.add("player-token");
-  token.style.backgroundColor = p.color;
-  board.appendChild(token);
-  tokenMap.set(p.name, token);
-});
-
-/* ------------------------------
-   MOVE PLAYER TOKEN
---------------------------------*/
-const tilePositions = [
-  { bottom: "5%", right: "5%" }, // GO
-  { bottom: "5%", right: "15%" },
-  { bottom: "5%", right: "25%" },
-  { bottom: "5%", right: "35%" },
-  { bottom: "5%", right: "45%" },
-  { bottom: "5%", right: "55%" },
-  { bottom: "5%", right: "65%" },
-  { bottom: "5%", right: "75%" },
-  { bottom: "5%", right: "85%" },
-  { bottom: "5%", right: "95%" },
-  { bottom: "15%", right: "95%" },
-  // Add more coordinates as needed for 40 tiles
-];
-
-function moveToken(player, steps) {
-  player.position = (player.position + steps) % tilePositions.length;
-  const pos = tilePositions[player.position];
-  const token = tokenMap.get(player.name);
-  token.style.bottom = pos.bottom;
-  token.style.right = pos.right;
+function showPopup(message, color="#00bfff") {
+  const popup = document.getElementById("popup");
+  popup.textContent = message;
+  popup.style.background = `linear-gradient(135deg, ${color}, #00b3ff)`;
+  popup.classList.add("show");
+  setTimeout(() => popup.classList.remove("show"), 2000);
 }
 
-/* ------------------------------
-   GAME TURN SYSTEM
---------------------------------*/
-let turn = 0;
-renderSidebar(turn);
+// Button actions
+document.getElementById("rollBtn").onclick = () => {
+  const roll = Math.floor(Math.random() * 6) + 1;
+  document.getElementById("diceDisplay").textContent = `🎲 ${roll}`;
+  showPopup(`${players[activePlayer].name} rolled a ${roll}!`, "#00ffcc");
+};
 
-function nextTurn() {
-  turn = (turn + 1) % players.length;
-  renderSidebar(turn);
-}
+document.getElementById("buyBtn").onclick = () => {
+  showPopup(`${players[activePlayer].name} bought a property!`, "#ffb300");
+};
 
-/* ------------------------------
-   BUTTON HANDLERS
---------------------------------*/
-document.getElementById("rollBtn").addEventListener("click", () => {
-  const dice = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
-  diceDisplay.textContent = dice;
-  const current = players[turn];
-  moveToken(current, dice);
-});
+document.getElementById("useCardBtn").onclick = () => {
+  showPopup(`${players[activePlayer].name} used a jail card!`, "#ff5c93");
+};
 
-document.getElementById("endTurnBtn").addEventListener("click", nextTurn);
-document.getElementById("buyBtn").addEventListener("click", () => alert("Property bought (placeholder)!"));
-document.getElementById("useCardBtn").addEventListener("click", () => alert("Used jail card (placeholder)!"));
+document.getElementById("endTurnBtn").onclick = () => {
+  activePlayer = (activePlayer + 1) % players.length;
+  renderSidebar();
+  showPopup(`Turn ended. ${players[activePlayer].name}'s turn!`, "#4a9eff");
+};
 </script>
 </body>
 </html>

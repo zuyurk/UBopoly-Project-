@@ -1,123 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UBHACKOPOLY – Player Setup</title>
-  <style>
-    :root{
-      --sky-1:#e6f4ff; --sky-2:#bfe4f2; --ink:#1d2230;
-      --tile:#f2e9d7; --shadow:0 12px 30px rgba(0,0,0,.18);
-      --accent:#0b5fbf; --accent-dark:#084b99;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      color:var(--ink);
-      background:
-        url("monopoly board.jpg") center / contain no-repeat,
-        url("moneyBackground.avif") center / cover no-repeat fixed;
-      display:grid; place-items:center;
-    }
-    .stage{ width:min(96vw,1200px); aspect-ratio:8/5; position:relative; }
-    .sky{
-      position:absolute; inset:10px;
-      background:radial-gradient(120% 90% at 50% 10%, var(--sky-1), var(--sky-2));
-      border-radius:18px; box-shadow:var(--shadow);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:clamp(14px,3vw,30px);
-      padding:clamp(12px,2vw,28px); text-align:center;
-    }
-    .subtitle{
-      font-weight:800; letter-spacing:.12em; text-transform:uppercase;
-      color:#0b5fbf;
-      text-shadow:0 2px 0 #ffffff66, 0 4px 18px rgba(0,0,0,.15);
-      font-size:clamp(14px,2.8vw,32px);
-    }
-    .name-row{ width:min(90%,720px); margin:0 auto; }
-    .name-input{
-      width:100%; font-size:clamp(14px,2.4vw,22px);
-      padding:14px 16px; border-radius:14px; border:2px solid rgba(0,0,0,.1);
-      outline:none; background:#ffffffd9; box-shadow:0 8px 18px rgba(0,0,0,.12);
-    }
-    .pieces-grid{
-      width:min(90%,720px); margin:0 auto;
-      display:grid; grid-template-columns:repeat(4,1fr);
-      gap:clamp(12px,2vw,20px); justify-items:center;
-    }
-    .piece{
-      width:100%; aspect-ratio:1/1; border-radius:14px;
-      background:var(--tile); border:3px dashed #c6bda7; box-shadow:var(--shadow);
-      display:grid; place-items:center; cursor:pointer;
-      transition:all .12s ease;
-    }
-    .piece:hover{ transform:translateY(-3px); box-shadow:0 16px 32px rgba(0,0,0,.22) }
-    .piece.selected{ border-style:solid; border-color:var(--accent); background:#fff;
-      box-shadow:0 0 0 4px rgba(11,95,191,.18), 0 16px 32px rgba(0,0,0,.22) }
-    .piece-label{ font-size:clamp(12px,2vw,16px); opacity:.5; user-select:none }
-    .actions{
-      width:min(90%,720px); margin-top:clamp(8px,2vw,16px);
-      display:flex; justify-content:center;
-    }
-    .btn-continue{
-      appearance:none; border:none; cursor:pointer;
-      padding:14px 24px; border-radius:14px;
-      background:linear-gradient(180deg, var(--accent), var(--accent-dark));
-      color:#fff; font-weight:800; letter-spacing:.04em;
-      box-shadow:0 10px 24px rgba(0,0,0,.18);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UBHACKOPOLY – Player Setup</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    height:100%;
+    font-family:"Poppins",sans-serif;
+    background:linear-gradient(160deg,#071c3b 0%,#0b0830 100%);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+  }
+
+  .wrapper{
+    width:min(90%,700px);
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border:2px solid rgba(255,255,255,0.1);
+    border-radius:20px;
+    padding:2rem 2.5rem;
+    box-shadow:0 0 40px rgba(0,136,255,0.3);
+    text-align:center;
+    position:relative;
+  }
+
+  h2{
+    font-size:1.8rem;
+    margin-bottom:1rem;
+    letter-spacing:2px;
+    background:linear-gradient(90deg,#00e0ff,#4b7aff);
+    -webkit-background-clip:text;
+    color:transparent;
+  }
+
+  input{
+    width:80%;
+    padding:0.8rem 1rem;
+    border-radius:12px;
+    border:none;
+    outline:none;
+    font-size:1rem;
+    margin:1rem 0 1.5rem;
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+  }
+  input::placeholder{color:#bbb;}
+
+  .piece-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:1rem;
+    justify-items:center;
+  }
+
+  .piece{
+    width:120px;height:120px;
+    background:rgba(255,255,255,0.12);
+    border:2px dashed rgba(255,255,255,0.3);
+    border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    transition:all 0.3s ease;
+  }
+  .piece:hover{
+    background:rgba(0,136,255,0.25);
+    border-color:#00b7ff;
+    transform:translateY(-4px) scale(1.05);
+  }
+  .piece.selected{
+    background:linear-gradient(135deg,#00e0ff,#4a00e0);
+    border:none;box-shadow:0 0 18px rgba(0,200,255,0.8);
+  }
+
+  .btn{
+    margin-top:1.5rem;
+    padding:0.9rem 2rem;
+    border:none;
+    border-radius:12px;
+    font-weight:700;
+    background:linear-gradient(135deg,#007bff,#4a00e0);
+    color:#fff;
+    cursor:pointer;
+    font-size:1.1rem;
+    transition:all 0.3s ease;
+  }
+  .btn:hover{
+    background:linear-gradient(135deg,#00b7ff,#6c00ff);
+    box-shadow:0 0 20px rgba(0,180,255,0.5);
+    transform:translateY(-2px);
+  }
+
+  .progress{
+    position:absolute;
+    top:0;left:0;
+    height:6px;
+    border-radius:6px 6px 0 0;
+    background:linear-gradient(90deg,#00b7ff,#4a00e0);
+    width:0%;
+    transition:width .4s ease;
+  }
+</style>
 </head>
 <body>
-  <div class="stage">
-    <div class="sky">
-      <div class="subtitle">Player Setup</div>
-      <div class="name-row">
-        <input class="name-input" type="text" placeholder="Enter your name" id="username"/>
-      </div>
-      <div class="pieces-grid">
-        <button class="piece" aria-label="Piece 1"><span class="piece-label">Piece 1</span></button>
-        <button class="piece" aria-label="Piece 2"><span class="piece-label">Piece 2</span></button>
-        <button class="piece" aria-label="Piece 3"><span class="piece-label">Piece 3</span></button>
-        <button class="piece" aria-label="Piece 4"><span class="piece-label">Piece 4</span></button>
-      </div>
-      <div class="actions">
-        <button class="btn-continue" id="continueBtn">Continue</button>
-      </div>
-    </div>
+
+<div class="wrapper">
+  <div class="progress" id="progressBar"></div>
+  <h2>Enter Player Info</h2>
+  <input id="username" type="text" placeholder="Your name here …" />
+
+  <div class="piece-grid">
+    <div class="piece" data-piece="🚗">🚗</div>
+    <div class="piece" data-piece="🐶">🐶</div>
+    <div class="piece" data-piece="🎩">🎩</div>
+    <div class="piece" data-piece="🛩️">🛩️</div>
   </div>
 
-  <script>
-    const pieces = document.querySelectorAll('.piece');
-    let selectedPiece = null;
-    pieces.forEach(btn => {
-      btn.addEventListener('click', () => {
-        pieces.forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedPiece = btn.getAttribute('aria-label');
-      });
-    });
+  <button class="btn" id="continueBtn">Continue</button>
+</div>
 
-    const playerCount = parseInt(localStorage.getItem("playerCount")) || 2;
-    const allPlayers = JSON.parse(localStorage.getItem("players") || "[]");
+<script>
+const playerCount=parseInt(localStorage.getItem("playerCount"))||2;
+const allPlayers=JSON.parse(localStorage.getItem("players")||"[]");
+const pieces=document.querySelectorAll(".piece");
+let selected=null;
 
-    document.getElementById('continueBtn').addEventListener('click', () => {
-      const name = document.getElementById('username').value.trim();
-      if (!name) return alert("Please enter your name!");
-      if (!selectedPiece) return alert("Please select your piece!");
+pieces.forEach(p=>{
+  p.addEventListener("click",()=>{
+    pieces.forEach(x=>x.classList.remove("selected"));
+    p.classList.add("selected");
+    selected=p.dataset.piece;
+  });
+});
 
-      allPlayers.push({ name, piece: selectedPiece });
-      localStorage.setItem("players", JSON.stringify(allPlayers));
+document.getElementById("continueBtn").addEventListener("click",()=>{
+  const name=document.getElementById("username").value.trim();
+  if(!name)return alert("Please enter your name!");
+  if(!selected)return alert("Please choose a piece!");
+  allPlayers.push({name, piece:selected});
+  localStorage.setItem("players",JSON.stringify(allPlayers));
 
-      if (allPlayers.length < playerCount) {
-        alert(`Player ${allPlayers.length} saved! Next player, please enter your info.`);
-        window.location.reload();
-      } else {
-        alert("All players set! Starting the game...");
-        window.location.href = "page3.html";
-      }
-    });
-  </script>
+  const progress=document.getElementById("progressBar");
+  progress.style.width=`${(allPlayers.length/playerCount)*100}%`;
+
+  if(allPlayers.length<playerCount){
+    alert(`Player ${allPlayers.length} saved! Next player, please.`);
+    setTimeout(()=>window.location.reload(),600);
+  }else{
+    alert("All players ready! Let’s play!");
+    window.location.href="page3.html";
+  }
+});
+</script>
 </body>
 </html>
