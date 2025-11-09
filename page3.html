@@ -46,7 +46,6 @@
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     overflow-y: auto;
   }
-
   .sidebar h2 {
     text-align: center;
     font-size: 1.3rem;
@@ -66,29 +65,17 @@
     align-items: center;
     transition: all 0.3s ease;
   }
-
   .player-card.active {
     background: linear-gradient(135deg, #007bff, #5e1fff);
     transform: scale(1.03);
     box-shadow: 0 0 14px #2196f3cc;
   }
-
   .player-info { flex: 1; }
   .player-name { font-weight: 700; font-size: 1rem; }
   .player-balance { font-size: 0.85rem; opacity: 0.9; }
 
-  .player-piece {
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-  }
-  .player-piece img {
-    width: 36px;
-    height: 36px;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
-  }
+  .player-piece { width: 42px; height: 42px; display: grid; place-items: center; }
+  .player-piece img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,.4)); }
 
   /* The Board */
   .board {
@@ -102,37 +89,33 @@
     border: 5px solid #00aaff;
     border-radius: 18px;
     box-shadow: 0 0 30px rgba(0, 150, 255, 0.5);
+    overflow: hidden;
   }
 
   
   .tile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: clamp(8px, 0.9vw, 13px);
-  text-align: center;
-  padding: 3px;
-  cursor: pointer;                 /* Make all tiles clickable */
-  transition: all 0.25s ease;      /* Smooth hover effect */
-  user-select: none;
-}
-
-/* Hover effect for all tiles */
-.tile:hover {
-  transform: scale(1.06);
-  z-index: 5;
-  background: rgba(0, 200, 255, 0.2);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
-}
-
-/* Active (clicked) effect */
-.tile:active {
-  transform: scale(0.98);
-  background: rgba(0, 150, 255, 0.35);
-  box-shadow: 0 0 20px rgba(0, 150, 255, 0.8);
-}
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: clamp(8px, 0.9vw, 13px);
+    text-align: center;
+    padding: 3px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+  }
+  .tile:hover {
+    transform: scale(1.06);
+    z-index: 5;
+    background: rgba(0, 200, 255, 0.2);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+  }
+  .tile:active {
+    transform: scale(0.98);
+    background: rgba(0, 150, 255, 0.35);
+    box-shadow: 0 0 20px rgba(0, 150, 255, 0.8);
+  }
 
   .corner { font-weight: bold; background: linear-gradient(145deg, #007bff, #001f5a); color: white; }
   .chance { background: #a78b1d; color: #fff; }
@@ -204,7 +187,6 @@
     gap: 16px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
-
   .actions button {
     width: 100%;
     padding: 14px;
@@ -218,13 +200,11 @@
     box-shadow: 0 0 18px rgba(0,136,255,0.3);
     transition: all 0.3s ease;
   }
-
   .actions button:hover {
     background: linear-gradient(135deg, #00b0ff, #5e1fff);
     transform: translateY(-2px);
     box-shadow: 0 0 25px rgba(90,50,255,0.6);
   }
-
   .dice-display { text-align:center; font-weight:700; opacity:.9; }
 
   /* Popup / notification */
@@ -244,8 +224,51 @@
     transition: all 0.4s ease;
     z-index: 999;
   }
-
   .popup.show { opacity: 1; transform: translateY(0); }
+
+  /* ===== Center slanted logo ===== */
+  .center-overlay{
+    position:absolute;
+    left:50%; top:50%;
+    transform: translate(-50%,-50%) rotate(-12deg);
+    z-index: 8; /* below corner buttons */
+    pointer-events: none;
+  }
+  .center-logo{
+    width: clamp(260px, 38vw, 520px);
+    height:auto;
+    filter: drop-shadow(0 12px 28px rgba(0,0,0,.35));
+    user-select:none;
+  }
+
+  /* ===== Diagonal card buttons ===== */
+  .corner-card {
+    position: absolute;
+    z-index: 12;
+    pointer-events: auto;
+    appearance:none;
+    border: 2px solid #ffd166;
+    background: rgba(0,0,0,.28);
+    color:#ffd166;
+    font-weight:800;
+    letter-spacing:.06em;
+    padding: 14px 18px;
+    border-radius: 14px;
+    text-transform: uppercase;
+    box-shadow: 0 10px 26px rgba(0,0,0,.35);
+    cursor:pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease, opacity .15s ease;
+    transform: rotate(-8deg);
+  }
+  .corner-card:hover { transform: rotate(-8deg) translateY(-2px); background: rgba(255,209,102,.12); color:#fff0c2; border-color:#ffe39b; }
+
+  /* Community Chest color theme */
+  #communityBtnBR { border-color:#7ecbff; color:#7ecbff; }
+  #communityBtnBR:hover { background: rgba(126,203,255,.12); color:#e7f5ff; border-color:#bde4ff; }
+
+  @media (max-width: 900px){
+    .corner-card { padding: 12px 14px; }
+  }
 </style>
 </head>
 <body>
@@ -253,6 +276,15 @@
   <div class="sidebar" id="playerSidebar"><h2>🎮 Players</h2></div>
 
   <div class="board" id="board">
+    <!-- Center slanted logo -->
+    <div class="center-overlay" id="centerLogoWrap">
+      <img class="center-logo" id="centerLogo" src="Images/UBHACK logo.png" alt="UBHACKOPOLY" />
+    </div>
+
+    <!-- Diagonal buttons (positioned via JS) -->
+    <button id="chanceBtnTL" class="corner-card">Chance</button>
+    <button id="communityBtnBR" class="corner-card">Community Chest</button>
+
     <!-- Corners -->
     <div class="tile corner" id="go">GO</div>
     <div class="tile corner" id="justVisiting">Just Visiting</div>
@@ -323,7 +355,6 @@ function loadPlayersFromStorage() {
     const count = parseInt(sessionStorage.getItem('playerCount') || '0', 10);
 
     if (Array.isArray(stored) && stored.length > 0) {
-      // Assign distinct sidebar colors
       const palette = ["#00bfff", "#ff4b5c", "#ffd700", "#00ff88", "#ff9f1c", "#9b5de5"];
       return stored.slice(0, Math.max(count, stored.length)).map((p, idx) => ({
         name: p.name || `Player ${idx+1}`,
@@ -334,7 +365,6 @@ function loadPlayersFromStorage() {
     }
   } catch (e) { /* ignore and fall back */ }
 
-  // Fallback to demo players if nothing in storage
   return [
     { name: "Player 1", color: "#00bfff", balance: 1500, pieceFile: "busPiece.png" },
     { name: "Player 2", color: "#ff4b5c", balance: 1500, pieceFile: "wingPiece.png" },
@@ -347,7 +377,6 @@ let players = loadPlayersFromStorage();
 let activePlayer = 0;
 
 function pieceMarkup(p) {
-  // If you stored just filenames like "busPiece.png", they live under Images/
   const src = p.pieceFile ? `Images/${p.pieceFile}` : "";
   return src ? `<img src="${src}" alt="${p.name} piece" />` : "🎲";
 }
@@ -377,18 +406,63 @@ document.querySelectorAll(".tile").forEach(tile => {
   tile.addEventListener("click", () => {
     const name = tile.textContent.trim();
     showPopup(`${players[activePlayer].name} clicked ${name}!`, "#00bfff");
-    console.log(`${players[activePlayer].name} selected tile: ${name}`);
   });
-
-  tile.addEventListener("mouseenter", () => {
-    tile.style.filter = "brightness(1.3)";
-  });
-
-  tile.addEventListener("mouseleave", () => {
-    tile.style.filter = "brightness(1)";
-  });
+  tile.addEventListener("mouseenter", () => { tile.style.filter = "brightness(1.3)"; });
+  tile.addEventListener("mouseleave", () => { tile.style.filter = "brightness(1)"; });
 });
 
+/* ---- Diagonal buttons click handlers ---- */
+document.getElementById('chanceBtnTL').addEventListener('click', () => {
+  showPopup(`${players[activePlayer].name} drew a Chance card!`, "#a78b1d");
+});
+document.getElementById('communityBtnBR').addEventListener('click', () => {
+  showPopup(`${players[activePlayer].name} opened Community Chest!`, "#2aa0ff");
+});
+
+/* ---- Position the diagonal buttons ~25px from the logo,
+        nudged (Chance RIGHT/DOWN, Community LEFT/UP) ---- */
+function positionCornerButtons() {
+  const board  = document.getElementById('board');
+  const logo   = document.getElementById('centerLogo');
+  const chance = document.getElementById('chanceBtnTL');
+  const comm   = document.getElementById('communityBtnBR');
+
+  const GAP = 25;       // base distance from logo edge
+  const CHANCE_DX = 200; // move Chance RIGHT
+  const CHANCE_DY = 40; // move Chance DOWN
+  const COMM_DX   = -200; // move Community LEFT
+  const COMM_DY   = -40; // move Community UP
+
+  const boardRect  = board.getBoundingClientRect();
+  const logoRect   = logo.getBoundingClientRect();
+  const chanceRect = chance.getBoundingClientRect();
+  const commRect   = comm.getBoundingClientRect();
+
+  // Chance near logo's top-left
+  let chanceTop  = (logoRect.top  - boardRect.top) - GAP - chanceRect.height + CHANCE_DY;
+  let chanceLeft = (logoRect.left - boardRect.left) - GAP - chanceRect.width  + CHANCE_DX;
+
+  // Community near logo's bottom-right
+  let commTop  = (logoRect.bottom - boardRect.top) + GAP + COMM_DY;
+  let commLeft = (logoRect.right  - boardRect.left) + GAP + COMM_DX;
+
+  // Clamp inside board (8px padding)
+  chanceTop  = Math.max(8, Math.min(boardRect.height - chanceRect.height - 8, chanceTop));
+  chanceLeft = Math.max(8, Math.min(boardRect.width  - chanceRect.width  - 8, chanceLeft));
+  commTop    = Math.max(8, Math.min(boardRect.height - commRect.height - 8, commTop));
+  commLeft   = Math.max(8, Math.min(boardRect.width  - commRect.width  - 8, commLeft));
+
+  chance.style.top  = `${chanceTop}px`;
+  chance.style.left = `${chanceLeft}px`;
+  comm.style.top    = `${commTop}px`;
+  comm.style.left   = `${commLeft}px`;
+}
+
+// Recalculate on load/resize & after logo loads
+window.addEventListener('load', positionCornerButtons);
+window.addEventListener('resize', positionCornerButtons);
+const centerLogo = document.getElementById('centerLogo');
+centerLogo.complete ? positionCornerButtons() : centerLogo.addEventListener('load', positionCornerButtons);
 
 /* ---- Popup helper ---- */
 function showPopup(message, color="#00bfff") {
@@ -399,21 +473,18 @@ function showPopup(message, color="#00bfff") {
   setTimeout(() => popup.classList.remove("show"), 2000);
 }
 
-/* ---- Buttons ---- */
+/* ---- Action buttons ---- */
 document.getElementById("rollBtn").onclick = () => {
   const roll = Math.floor(Math.random() * 6) + 1;
   document.getElementById("diceDisplay").textContent = `🎲 ${roll}`;
   showPopup(`${players[activePlayer].name} rolled a ${roll}!`, "#00ffcc");
 };
-
 document.getElementById("buyBtn").onclick = () => {
   showPopup(`${players[activePlayer].name} bought a property!`, "#ffb300");
 };
-
 document.getElementById("useCardBtn").onclick = () => {
   showPopup(`${players[activePlayer].name} used a jail card!`, "#ff5c93");
 };
-
 document.getElementById("endTurnBtn").onclick = () => {
   activePlayer = (activePlayer + 1) % players.length;
   renderSidebar();
