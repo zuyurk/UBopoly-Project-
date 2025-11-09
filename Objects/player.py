@@ -1,3 +1,6 @@
+from Objects.property import Property
+
+
 class Player:
     GO_CASH = 200  # Money received when passing GO
 
