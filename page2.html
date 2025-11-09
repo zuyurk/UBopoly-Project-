@@ -8,7 +8,7 @@
     :root{
       --sky-1:#e6f4ff; --sky-2:#bfe4f2; --ink:#1d2230;
       --tile:#f2e9d7; --shadow:0 12px 30px rgba(0,0,0,.18);
-      --accent:#0b5fbf;; --accent-soft:rgba(255,100,43,.18);
+      --accent:#0b5fbf; --accent-soft:rgba(11,95,191,.15);
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
@@ -29,9 +29,35 @@
       gap:clamp(14px,3vw,30px);
       padding:clamp(12px,2vw,28px); text-align:center;
     }
+
+    /* Back button (top-left inside the sky box) */
+    .back-btn{
+      position:absolute;
+      top:14px; left:14px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 14px;
+      border-radius:12px;
+      background:#ffffffcc;
+      color:#0b5fbf;
+      border:2px solid #d5e6ff;
+      box-shadow:0 6px 16px rgba(0,0,0,.12);
+      cursor:pointer;
+      font-weight:700;
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
+      text-decoration:none;
+    }
+    .back-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 22px rgba(0,0,0,.18);
+      background:#ffffff;
+      border-color:#b7d2ff;
+    }
+    .back-btn:active{ transform:translateY(0) }
+    .back-btn svg{ width:18px; height:18px; }
+
     .subtitle{
       font-weight:800; letter-spacing:.12em; text-transform:uppercase;
-      color:#0b5fbf; /* deep blue title */
+      color:#0b5fbf;
       text-shadow:0 2px 0 #ffffff66, 0 4px 18px rgba(0,0,0,.15);
       font-size:clamp(14px,2.8vw,32px);
     }
@@ -92,12 +118,21 @@
     @media(max-width:640px){
       .stage{ width:98vw; aspect-ratio:7/5 }
       .sky{ inset:8px }
+      .back-btn{ top:10px; left:10px; padding:10px 12px }
     }
   </style>
 </head>
 <body>
   <div class="stage" role="main" aria-label="UBHACKOPOLY Player Setup">
     <div class="sky">
+      <!-- Back Button -->
+      <button class="back-btn" id="backBtn" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
+      </button>
+
       <div class="subtitle">Player Setup</div>
 
       <div class="name-row">
@@ -135,6 +170,15 @@
   </div>
 
   <script>
+    // Back button: go to previous page or fallback to player select
+    document.getElementById('backBtn').addEventListener('click', () => {
+      if (history.length > 1) {
+        history.back();
+      } else {
+        window.location.href = 'page1.html'; // fallback (change if your select page is different)
+      }
+    });
+
     // Piece selection
     const pieces = document.querySelectorAll('.piece');
     let selectedPiece = null;
