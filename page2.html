@@ -96,7 +96,7 @@
   </div>
 
 <script>
-/* ===== API base forced to 5050 (works for file:// or localhost) ===== */
+/* ===== API base forced to 5050 ===== */
 const API = (() => {
   try {
     const isFile = location.protocol === 'file:';
@@ -158,8 +158,19 @@ function renderPlayers() {
     const container = document.getElementById(`pieces_${idx}`);
     container.querySelectorAll(".piece").forEach(el => {
       el.addEventListener("click", () => {
-        players[idx].piece = el.dataset.piece;
-        // toggle selection visuals
+        const selectedPiece = el.dataset.piece;
+
+        // Check if another player already has this piece
+        const alreadyChosen = players.some((player, i) => i !== idx && player.piece === selectedPiece);
+        if (alreadyChosen) {
+          alert("This token is already taken by another player! Choose a different one.");
+          return;
+        }
+
+        // Update selection
+        players[idx].piece = selectedPiece;
+
+        // Toggle selection visuals
         container.querySelectorAll(".piece").forEach(k => k.classList.remove("selected"));
         el.classList.add("selected");
       });
@@ -183,22 +194,21 @@ document.getElementById("removePlayerBtn").addEventListener("click", () => {
 
 /* ===== Start game: save to session + send to backend + go page3 ===== */
 document.getElementById("startBtn").addEventListener("click", async () => {
-  // validation: names non-empty & unique piece picks suggested (allow duplicates if you want)
+  // validation: names non-empty & unique pieces
   for (const p of players) {
     if (!p.name || !p.name.trim()) return alert("Please enter all player names.");
     if (!p.piece) return alert("Please choose a token for each player.");
   }
 
-  // Save locally so page3 can bootstrap even if server restarts
+  // Save locally so page3 can bootstrap
   sessionStorage.setItem("players", JSON.stringify(players));
 
   try {
     await api("/init_players", { method: "POST", body: JSON.stringify({ players }) });
   } catch (e) {
-    // Let them proceed; page3 will attempt to ensure backend players again
     console.warn("Init on server failed (continuing anyway):", e);
   }
-  // Go to the board
+
   location.href = "page3.html";
 });
 
