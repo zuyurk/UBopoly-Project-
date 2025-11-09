@@ -19,13 +19,7 @@
     overflow: hidden;
   }
 
-  .game-container {
-    display: grid;
-    grid-template-columns: 22% 53% 25%;
-    width: min(96vw, 1600px);
-    height: min(96vh, 1000px);
-    gap: 1rem;
-  }
+  .game-container { display: grid; grid-template-columns: 22% 53% 25%; width: min(96vw, 1600px); height: min(96vh, 1000px); gap: 1rem; }
 
   .sidebar {
     backdrop-filter: blur(18px);
@@ -37,54 +31,29 @@
     overflow-y: auto;
   }
   .sidebar h2 { text-align: left; font-size: 1.6rem; margin-bottom: 12px; color: #cfe8ff; text-shadow: 0 0 8px rgba(0,180,255,.5); }
-
-  .player-card {
-    background: rgba(255,255,255,0.08);
-    border-radius: 12px;
-    margin-bottom: 0.6rem;
-    padding: 0.8rem;
-    border-left: 6px solid;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all .25s ease;
-  }
-  .player-card.active {
-    background: linear-gradient(135deg, #007bff, #5e1fff);
-    transform: scale(1.03);
-    box-shadow: 0 0 14px #2196f3cc;
-  }
+  .player-card { background: rgba(255,255,255,0.08); border-radius: 12px; margin-bottom: 0.6rem; padding: 0.8rem; border-left: 6px solid; display: flex; justify-content: space-between; align-items: center; transition: all .25s ease; }
+  .player-card.active { background: linear-gradient(135deg, #007bff, #5e1fff); transform: scale(1.03); box-shadow: 0 0 14px #2196f3cc; }
   .player-info { flex: 1; min-width: 0; }
   .player-name { font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .player-balance { font-size: .95rem; opacity: .95; }
 
-  .board-wrap {
-    position: relative;
-    backdrop-filter: blur(18px);
-    background: rgba(255, 255, 255, 0.06);
-    border: 5px solid #00aaff;
-    border-radius: 18px;
-    box-shadow: 0 0 30px rgba(0,150,255,0.5);
-    overflow: hidden;
-  }
+  .board-wrap { position: relative; backdrop-filter: blur(18px); background: rgba(255,255,255,0.06); border: 5px solid #00aaff; border-radius: 18px; box-shadow: 0 0 30px rgba(0,150,255,0.5); overflow: hidden; }
   .board { position: relative; width: 100%; height: 100%; background: radial-gradient(circle at center, #071b35 25%, #00142e 100%); }
-
   .tiles { position: absolute; inset: 12px; display: grid; grid-template-columns: repeat(11, 1fr); grid-template-rows: repeat(11, 1fr); gap: 4px; }
   .tile { display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.07); font-size:clamp(9px,.95vw,13px); text-align:center; padding:4px; border-radius:8px; }
-  .tile.landed { outline: 3px solid #00e5ff; box-shadow: 0 0 14px #00e5ff; }
+  .tile.landed { outline:3px solid #00e5ff; box-shadow:0 0 14px #00e5ff; }
   .corner { font-weight: 800; background: linear-gradient(145deg, #007bff, #001f5a); color: #fff; }
-  .chance { background: #a78b1d; color: #fff; }
-  .community { background: #007e33; color: #fff; }
-  .bus { background: #5f5f5f; color: #fff; }
-  .fees { background: #9c174d; color: #fff; }
+  .chance { background:#a78b1d; color:#fff; }
+  .community { background:#007e33; color:#fff; }
+  .bus { background:#5f5f5f; color:#fff; }
+  .fees { background:#9c174d; color:#fff; }
 
-  /* Corners */
+  /* Grid placement (same layout you liked) */
   #GO { grid-row: 11; grid-column: 11; }
   #JustVisiting { grid-row: 11; grid-column: 1; }
   #FreeParking { grid-row: 1; grid-column: 1; }
   #GoToAcademicViolation { grid-row: 1; grid-column: 11; }
 
-  /* Bottom row */
   #Baird { grid-row: 11; grid-column: 10; }
   #CommunityChest1 { grid-row: 11; grid-column: 9; }
   #Clements { grid-row: 11; grid-column: 8; }
@@ -95,7 +64,6 @@
   #Jacobs { grid-row: 11; grid-column: 3; }
   #Park { grid-row: 11; grid-column: 2; }
 
-  /* Left column */
   #OBrian { grid-row: 10; grid-column: 1; }
   #MTBanks { grid-row: 9; grid-column: 1; }
   #Norton { grid-row: 8; grid-column: 1; }
@@ -106,7 +74,6 @@
   #Talbert { grid-row: 3; grid-column: 1; }
   #Hochstetter { grid-row: 2; grid-column: 1; }
 
-  /* Top row */
   #Cooke { grid-row: 1; grid-column: 2; }
   #Chance2 { grid-row: 1; grid-column: 3; }
   #Fronczak { grid-row: 1; grid-column: 4; }
@@ -117,7 +84,6 @@
   #Valmar { grid-row: 1; grid-column: 9; }
   #GoToJail { grid-row: 1; grid-column: 11; }
 
-  /* Right column */
   #TheCommons { grid-row: 2; grid-column: 11; }
   #CenterForTheArts { grid-row: 3; grid-column: 11; }
   #CommunityChest3 { grid-row: 4; grid-column: 11; }
@@ -140,6 +106,8 @@
 
   .popup { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #007bff, #00b3ff); color: white; padding: 15px 22px; border-radius: 12px; font-weight: 600; font-size: 1rem; box-shadow: 0 0 25px rgba(0, 180, 255, 0.5); opacity: 0; transform: translateY(-20px); transition: all .35s ease; z-index: 999; }
   .popup.show { opacity: 1; transform: translateY(0); }
+
+  .hidden { display: none; }
 </style>
 </head>
 <body>
@@ -166,7 +134,7 @@
         <div class="tile" id="Jacobs">Jacobs</div>
         <div class="tile" id="Park">Park</div>
 
-        <!-- Left column -->
+        <!-- Left -->
         <div class="tile" id="OBrian">O'Brian</div>
         <div class="tile" id="MTBanks">M &amp; T Banks</div>
         <div class="tile" id="Norton">Norton</div>
@@ -177,7 +145,7 @@
         <div class="tile" id="Talbert">Talbert</div>
         <div class="tile" id="Hochstetter">Hochstetter</div>
 
-        <!-- Top row -->
+        <!-- Top -->
         <div class="tile" id="Cooke">Cooke</div>
         <div class="tile chance" id="Chance2">Chance</div>
         <div class="tile" id="Fronczak">Fronczak</div>
@@ -188,7 +156,7 @@
         <div class="tile" id="Valmar">Valmar</div>
         <div class="tile corner" id="GoToJail">Go To Jail</div>
 
-        <!-- Right column -->
+        <!-- Right -->
         <div class="tile" id="TheCommons">The Commons</div>
         <div class="tile" id="CenterForTheArts">Center for the Arts</div>
         <div class="tile community" id="CommunityChest3">Community Chest</div>
@@ -206,6 +174,7 @@
     <button id="rollBtn">🎲 Roll Dice</button>
     <div class="dice-display" id="diceDisplay">–</div>
     <button id="buyBtn">💰 Buy Property</button>
+    <button id="useCardBtn" class="hidden">🎟️ Use Chance Card</button>
     <button id="endTurnBtn">➡️ End Turn</button>
     <button id="resetBtn">🔄 Reset Game</button>
   </div>
@@ -214,7 +183,6 @@
 <div class="popup" id="popup">Notification</div>
 
 <script>
-/* ===== API helper ===== */
 const API = (location.protocol === "file:" || location.port !== "5000")
   ? "http://127.0.0.1:5000"
   : location.origin;
@@ -233,57 +201,12 @@ async function api(path, options = {}) {
   return res.json();
 }
 
-/* ===== State ===== */
 let game = { active_player: 0, players: [] };
 const colors = ["#00bfff", "#ff4b5c", "#ffd700", "#00ff88", "#ff9f1c", "#9b5de5"];
+let lastKeepableCard = null; // remember the last drawn keepable card for quick 'use' button
 
-/* ===== UI ===== */
-function renderSidebar() {
-  const side = document.getElementById("playerSidebar");
-  side.innerHTML = `<h2>🎮 Players</h2>`;
-  (game.players || []).forEach((p, i) => {
-    const card = document.createElement("div");
-    card.className = "player-card" + (i === game.active_player ? " active" : "");
-    card.style.borderLeftColor = colors[i % colors.length];
-    card.innerHTML = `
-      <div class="player-info">
-        <div class="player-name">${p.name}</div>
-        <div class="player-balance">💵 $${p.balance}</div>
-      </div>`;
-    side.appendChild(card);
-  });
-}
-
-function ensureTokens() {
-  const board = document.getElementById("board");
-  [...document.querySelectorAll(".token")].forEach(el => el.remove());
-  (game.players || []).forEach((p, i) => {
-    const t = document.createElement("div");
-    t.className = "token";
-    t.dataset.index = i;
-    if (p.piece) t.innerHTML = `<img src="Images/${p.piece}" alt="${p.name} piece"/>`;
-    else t.innerHTML = `<div class="chip" style="background:${colors[i % colors.length]}"></div>`;
-    board.appendChild(t);
-  });
-}
-
-function positionTokens() {
-  const boardRect = document.getElementById("board").getBoundingClientRect();
-  const inset = 12, w = boardRect.width - inset * 2, h = boardRect.height - inset * 2;
-  document.querySelectorAll(".token").forEach(t => {
-    const i = +t.dataset.index;
-    const p = game.players[i];
-    const [x, y] = p.coords || [50, 50];
-    const offs = [{dx:0,dy:0},{dx:8,dy:-8},{dx:-8,dy:8},{dx:8,dy:8}][i % 4];
-    t.style.left = `${inset + (x/100)*w + offs.dx}px`;
-    t.style.top  = `${inset + (y/100)*h + offs.dy}px`;
-  });
-}
-window.addEventListener("resize", positionTokens);
-
-function clearHighlights(){ document.querySelectorAll(".tile.landed").forEach(el => el.classList.remove("landed")); }
-function highlightByName(name) {
-  const idMap = {
+function idForTileName(name) {
+  const map = {
     "GO":"GO","Just Visiting":"JustVisiting","Free Parking":"FreeParking",
     "Go to Academic Violation":"GoToAcademicViolation","Go To Jail":"GoToJail",
     "Baird":"Baird","Clements":"Clements","Baldy":"Baldy","Jacobs":"Jacobs","Park":"Park",
@@ -294,73 +217,118 @@ function highlightByName(name) {
     "The Commons":"TheCommons","Center for the Arts":"CenterForTheArts","Alumni Arena":"AlumniArena",
     "Davis":"Davis","Jarvis":"Jarvis","North Bus":"NorthBus","South Bus":"SouthBus",
     "Downtown Bus":"DowntownBus","Shopping Bus":"ShoppingBus",
-    "SA Fees":"SAFees","Textbook Fees":"TextbookFees"
+    "SA Fees":"SAFees","Textbook Fees":"TextbookFees",
+    "Community Chest": null, "Chance": null // handled as groups
   };
+  return map[name] ?? null;
+}
+
+function centerOfTileId(tileId) {
+  const board = document.getElementById("board").getBoundingClientRect();
+  const el = document.getElementById(tileId);
+  if (!el) return {x: board.left + board.width/2, y: board.top + board.height/2};
+  const r = el.getBoundingClientRect();
+  return { x: r.left + r.width/2, y: r.top + r.height/2 };
+}
+
+function positionTokens() {
+  const insetParent = document.getElementById("board").getBoundingClientRect();
+  const offsets = [{dx:0,dy:0},{dx:8,dy:-8},{dx:-8,dy:8},{dx:8,dy:8},{dx:-8,dy:-8}];
+
+  document.querySelectorAll(".token").forEach(el => el.remove());
+
+  (game.players || []).forEach((p, i) => {
+    const token = document.createElement("div");
+    token.className = "token";
+    if (p.piece) token.innerHTML = `<img src="Images/${p.piece}" alt="${p.name} piece" />`;
+    else token.innerHTML = `<div class="chip" style="background:${colors[i % colors.length]}"></div>`;
+
+    const tileId = idForTileName(p.tile) || "GO"; // default to GO
+    const c = centerOfTileId(tileId);
+    const off = offsets[i % offsets.length];
+
+    // convert viewport coords to board-local (left/top)
+    token.style.left = (c.x - insetParent.left + off.dx) + "px";
+    token.style.top  = (c.y - insetParent.top  + off.dy) + "px";
+
+    document.getElementById("board").appendChild(token);
+  });
+}
+
+function renderSidebar() {
+  const side = document.getElementById("playerSidebar");
+  side.innerHTML = `<h2>🎮 Players</h2>`;
+  (game.players || []).forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "player-card" + (i === game.active_player ? " active" : "");
+    card.style.borderLeftColor = colors[i % colors.length];
+    const cardCount = Array.isArray(p.cards) ? p.cards.length : 0;
+    card.innerHTML = `
+      <div class="player-info">
+        <div class="player-name">${p.name}</div>
+        <div class="player-balance">💵 $${p.balance} ${cardCount ? `&nbsp;•&nbsp;🎟️ ${cardCount}` : ""}</div>
+      </div>`;
+    side.appendChild(card);
+  });
+}
+
+function clearHighlights(){ document.querySelectorAll(".tile.landed").forEach(el => el.classList.remove("landed")); }
+function highlightByName(name) {
   clearHighlights();
-  const id = idMap[name];
+  const id = idForTileName(name);
   if (id) document.getElementById(id)?.classList.add("landed");
   else if (name === "Chance") ["Chance1","Chance2","Chance3"].forEach(cid => document.getElementById(cid)?.classList.add("landed"));
   else if (name === "Community Chest") ["CommunityChest1","CommunityChest2","CommunityChest3"].forEach(cid => document.getElementById(cid)?.classList.add("landed"));
 }
 
-/* ===== Self-healing bootstrap ===== */
-function storedPlayers() {
-  try { return JSON.parse(sessionStorage.getItem('players') || '[]'); } catch { return []; }
-}
-function isPlaceholderRoster(list) {
-  if (!Array.isArray(list) || list.length === 0) return true;
-  return list.every(p => /^Player\s+\d+$/i.test(p?.name || ""));
-}
-
-async function refreshFromServer() {
-  let serverOK = true;
+async function refresh() {
+  // Try state; if server is empty, try to init from sessionStorage (self-heal)
   try {
     game = await api("/state");
-  } catch (e) {
-    serverOK = false;
-    game = { active_player: 0, players: [] };
-  }
-
-  // If server is up but has no real players, push sessionStorage roster
-  if (serverOK && (!game.players || game.players.length === 0 || isPlaceholderRoster(game.players))) {
-    const local = storedPlayers();
-    if (local.length) {
-      try {
+    if (!game.players || !game.players.length || game.players.every(p => /^Player\s+\d+$/i.test(p.name))) {
+      const local = JSON.parse(sessionStorage.getItem("players") || "[]");
+      if (local.length) {
         await api("/init_players", { method: "POST", body: JSON.stringify({ players: local }) });
         game = await api("/state");
-      } catch { /* fallback handled below */ }
+      }
     }
+  } catch {
+    game = { active_player: 0, players: [] };
   }
-
-  // If still empty and we have local players (server maybe down), emulate minimal state
-  if (!game.players || game.players.length === 0) {
-    const local = storedPlayers();
-    if (local.length) {
-      game = {
-        active_player: 0,
-        players: local.map(p => ({ name: p.name, balance: 1500, piece: p.piece, coords: [50,50], position: 0 }))
-      };
-    }
-  }
-
-  renderSidebar(); ensureTokens(); positionTokens();
+  renderSidebar();
+  positionTokens();
 }
 
 async function doRoll() {
   const data = await api("/roll", { method: "POST" });
+  game = data;
   document.getElementById("diceDisplay").textContent = `🎲 ${data.roll}`;
   showPopup(data.message, "linear-gradient(135deg,#00ffcc,#00b3ff)");
-  game = data; renderSidebar(); ensureTokens(); positionTokens();
+  renderSidebar();
+  positionTokens();
   if (data.landed) highlightByName(data.landed);
+
+  // Chance UI
+  lastKeepableCard = null;
+  document.getElementById("useCardBtn").classList.add("hidden");
+  if (data.chance_card) {
+    if (data.chance_card.type === "immediate") {
+      showPopup(`Chance: ${data.chance_card.text}`, "linear-gradient(135deg,#f7b733,#fc4a1a)");
+    } else {
+      lastKeepableCard = data.chance_card; // e.g., jail_free
+      document.getElementById("useCardBtn").classList.remove("hidden");
+      showPopup(`Chance (kept): ${data.chance_card.text}`, "linear-gradient(135deg,#ffd166,#f77f00)");
+    }
+  }
 }
 
-/* ===== Buttons ===== */
 document.getElementById("rollBtn").onclick = () => doRoll().catch(e => showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"));
 
 document.getElementById("buyBtn").onclick = async () => {
   try {
-    const data = await api("/buy", { method: "POST", body: JSON.stringify({}) });
-    showPopup(data.message || "Attempted to buy.", "linear-gradient(135deg,#ffb300,#ff8a00)");
+    const data = await api("/buy", { method: "POST" });
+    if (data.error) showPopup(data.error, "linear-gradient(135deg,#ff5a6b,#ff2a68)");
+    else showPopup(data.message || "Bought.", "linear-gradient(135deg,#ffb300,#ff8a00)");
     game = data; renderSidebar();
   } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
 };
@@ -368,21 +336,33 @@ document.getElementById("buyBtn").onclick = async () => {
 document.getElementById("endTurnBtn").onclick = async () => {
   try {
     const data = await api("/end_turn", { method: "POST" });
-    showPopup(`Next: ${data.next_player}`, "linear-gradient(135deg,#4a9eff,#5e1fff)");
     game = data; renderSidebar();
+    document.getElementById("useCardBtn").classList.add("hidden");
+    showPopup(`Next: ${data.players[data.active_player].name}`, "linear-gradient(135deg,#4a9eff,#5e1fff)");
   } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
 };
 
 document.getElementById("resetBtn").onclick = async () => {
   try {
     const data = await api("/reset", { method: "POST" });
+    game = data; renderSidebar(); positionTokens(); clearHighlights();
+    document.getElementById("useCardBtn").classList.add("hidden");
     showPopup("Game reset!", "linear-gradient(135deg,#ff4b5c,#ff6f91)");
-    game = data; renderSidebar(); ensureTokens(); positionTokens(); clearHighlights();
   } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
 };
 
-/* ===== Init ===== */
-refreshFromServer();
+document.getElementById("useCardBtn").onclick = async () => {
+  if (!lastKeepableCard) return;
+  try {
+    const data = await api("/use_card", { method: "POST", body: JSON.stringify({ card_id: lastKeepableCard.id }) });
+    game = data; renderSidebar(); positionTokens();
+    document.getElementById("useCardBtn").classList.add("hidden");
+    showPopup(data.message || "Used card.", "linear-gradient(135deg,#06d6a0,#118ab2)");
+  } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
+};
+
+window.addEventListener("resize", positionTokens);
+refresh();
 </script>
 </body>
 </html>
