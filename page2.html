@@ -54,6 +54,14 @@
     .piece:hover{ transform:translateY(-3px); box-shadow:0 16px 32px rgba(0,0,0,.22); filter:saturate(1.03); }
     .piece.selected{ border-style:solid; border-color:var(--accent); background:#fff; box-shadow:0 0 0 4px var(--accent-soft), 0 16px 32px rgba(0,0,0,.22); }
     .piece img{ width:80%; height:80%; object-fit:contain; pointer-events:none; user-select:none; filter:drop-shadow(0 6px 12px rgba(0,0,0,.18)); }
+
+    /* Unavailable (already taken by another player) */
+    .piece.unavailable,
+    .piece:disabled{
+      opacity:.45; cursor:not-allowed; filter:grayscale(90%);
+      border-style:dashed; transform:none !important;
+    }
+
     .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
 
     .actions{ width:min(90%,720px); margin-top:clamp(8px,2vw,16px); display:flex; justify-content:center; }
@@ -112,15 +120,15 @@
   </div>
 
   <script>
-    // Read player count from URL (?count=2/3/4)
+    // --- Read player count from URL (?count=2/3/4)
     const params = new URLSearchParams(window.location.search);
     const totalPlayers = Math.max(1, parseInt(params.get('count') || '1', 10));
 
-    // Store entered players (name + piece)
-    const players = []; // [{name, piece}, ...]
-
+    // Collected players
+    const players = []; // [{ name, piece }, ...]
     let i = 0; // current player index
 
+    // Elements
     const subtitle = document.getElementById('subtitle');
     const usernameEl = document.getElementById('username');
     const pieceButtons = Array.from(document.querySelectorAll('.piece'));
@@ -128,28 +136,56 @@
 
     let selectedPiece = null;
 
+    // Helper: which pieces are already taken by other players (exclude current index)
+    function usedPieces(exceptIndex) {
+      const set = new Set();
+      players.forEach((p, idx) => {
+        if (idx !== exceptIndex && p?.piece) set.add(p.piece);
+      });
+      return set;
+    }
+
+    // Render current step and enforce availability
     function renderStep() {
       subtitle.textContent = `Player Setup (${i + 1} / ${totalPlayers})`;
 
+      // Preload existing input (if any)
       const existing = players[i];
       usernameEl.value = existing?.name || '';
       selectedPiece = existing?.piece || null;
 
+      // Compute pieces used by other players
+      const taken = usedPieces(i);
+
+      // Sync button states
       pieceButtons.forEach(btn => {
-        btn.classList.toggle('selected', btn.dataset.piece === selectedPiece);
+        const piece = btn.dataset.piece;
+        const isSelectedByOthers = taken.has(piece);
+        const isCurrentSelection = (piece === selectedPiece);
+
+        // Disable if taken by others; allow if it's the current player's previous choice
+        const disabled = isSelectedByOthers && !isCurrentSelection;
+        btn.disabled = disabled;
+        btn.classList.toggle('unavailable', disabled);
+
+        // Visual selection state
+        btn.classList.toggle('selected', piece === selectedPiece);
       });
 
       usernameEl.focus();
     }
 
+    // Piece selection (ignore clicks on disabled/unavailable)
     pieceButtons.forEach(btn => {
       btn.addEventListener('click', () => {
+        if (btn.disabled) return; // cannot select a taken piece
         pieceButtons.forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         selectedPiece = btn.dataset.piece;
       });
     });
 
+    // Continue: save current, advance or finish
     continueBtn.addEventListener('click', () => {
       const name = usernameEl.value.trim();
       if (!name || !selectedPiece) {
@@ -160,15 +196,18 @@
 
       if (i + 1 < totalPlayers) {
         i += 1;
+        // When moving to next player, they start with no piece selected
         selectedPiece = players[i]?.piece || null;
         renderStep();
       } else {
+        // Finished: persist and go to page 3
         sessionStorage.setItem('players', JSON.stringify(players));
         sessionStorage.setItem('playerCount', String(totalPlayers));
         window.location.href = 'page3.html';
       }
     });
 
+    // Back behavior: go to previous player, freeing the next player's choice from "taken" automatically
     document.getElementById('backBtn').addEventListener('click', () => {
       if (i > 0) {
         i -= 1;
@@ -179,6 +218,7 @@
       }
     });
 
+    // Initialize
     renderStep();
   </script>
 </body>
