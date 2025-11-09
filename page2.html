@@ -1,142 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UBHACKOPOLY – Player Setup</title>
-  <style>
-    :root{ --sky-1:#e6f4ff; --sky-2:#bfe4f2; --ink:#1d2230; --tile:#f2e9d7; --shadow:0 12px 30px rgba(0,0,0,.18); --accent:#0b5fbf; --accent-soft:rgba(11,95,191,.15); }
-    *{box-sizing:border-box} html,body{height:100%;margin:0}
-    body{
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      color:var(--ink);
-      background:
-        url("monopoly board.jpg") center / contain no-repeat,
-        url("Images/moneyBackground.avif") center / cover no-repeat fixed;
-      display:grid; place-items:center;
-    }
-    .stage{ width:min(96vw,1200px); aspect-ratio:8/5; position:relative; }
-    .sky{
-      position:absolute; inset:10px; background:radial-gradient(120% 90% at 50% 10%, var(--sky-1), var(--sky-2));
-      border-radius:18px; box-shadow:var(--shadow);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:clamp(14px,3vw,30px); padding:clamp(12px,2vw,28px); text-align:center;
-    }
-    .back-btn{
-      position:absolute; top:14px; left:14px; display:inline-flex; align-items:center; gap:8px;
-      padding:10px 14px; border-radius:12px; background:#ffffffcc; color:#0b5fbf; border:2px solid #d5e6ff;
-      box-shadow:0 6px 16px rgba(0,0,0,.12); cursor:pointer; font-weight:700; text-decoration:none;
-    }
-    .subtitle{ font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#0b5fbf; font-size:clamp(14px,2.8vw,32px); }
-    .name-row{ width:min(90%,720px); margin:0 auto; }
-    .name-input{
-      width:100%; font-size:clamp(14px,2.4vw,22px); padding:14px 16px; border-radius:14px; border:2px solid rgba(0,0,0,.1);
-      outline:none; background:#ffffffd9; box-shadow:0 8px 18px rgba(0,0,0,.12);
-    }
-    .pieces-grid{
-      width:min(90%,720px); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr);
-      gap:clamp(12px,2vw,20px); justify-items:center;
-    }
-    .piece{ width:100%; aspect-ratio:1/1; border-radius:14px; background:var(--tile); border:3px dashed #c6bda7; box-shadow:var(--shadow);
-      display:grid; place-items:center; cursor:pointer; transition:transform .12s, box-shadow .12s, border-color .12s, background .12s, filter .12s; overflow:hidden;}
-    .piece.selected{ border-style:solid; border-color:var(--accent); background:#fff; box-shadow:0 0 0 4px var(--accent-soft); }
-    .piece img{ width:80%; height:80%; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,.18)); }
-    .actions{ width:min(90%,720px); display:flex; justify-content:center; }
-    .btn-continue{ padding:14px 24px; border-radius:14px; background:linear-gradient(180deg,#0b5fbf,#074aa0); color:#fff; font-weight:800; border:none; cursor:pointer; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UBHACKOPOLY – Player Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(circle at top, #0b1335, #02040a 85%);
+    color: #fff;
+  }
+  .wrap {
+    max-width: 1100px; margin: 26px auto; padding: 16px;
+  }
+  h1 { font-size: clamp(1.4rem, 2.6vw, 2rem); color: #bde3ff; text-shadow: 0 0 10px rgba(0,180,255,.45); margin-bottom: 14px; }
+  p  { opacity: .85; margin-bottom: 18px; }
+  .grid {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+  }
+  .card {
+    background: rgba(255,255,255,.08);
+    border: 2px solid rgba(255,255,255,.15);
+    border-radius: 16px;
+    padding: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  }
+  .card h2 { font-size: 1.05rem; margin-bottom: 8px; color:#9fd4ff; }
+  label { display:block; font-size:.9rem; opacity:.9; margin: 8px 0 6px; }
+  input[type="text"]{
+    width: 100%; padding: 10px 12px; border-radius:12px;
+    border:1px solid rgba(255,255,255,.22); background:rgba(0,0,0,.25); color:#fff;
+    outline:none;
+  }
+  .pieces {
+    display: grid; gap: 10px; grid-template-columns: repeat(4, 1fr); margin-top: 10px;
+  }
+  .piece {
+    border: 2px solid transparent; border-radius: 12px; padding: 8px;
+    background: rgba(255,255,255,.06); cursor: pointer; text-align: center;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .piece img { width: 56px; height: 56px; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,.45)); }
+  .piece span { display:block; font-size: .85rem; margin-top: 6px; opacity: .9; }
+  .piece:hover { transform: translateY(-2px); box-shadow: 0 0 0 3px rgba(0,180,255,.25) inset; }
+  .piece.selected { border-color: #00b0ff; box-shadow: 0 0 0 3px rgba(0,180,255,.35) inset; }
+
+  .actions {
+    display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;
+  }
+  button {
+    border: none; border-radius: 12px; padding: 12px 16px; cursor: pointer;
+    font-weight: 700; color: #fff; background: linear-gradient(135deg,#007bff,#4a00e0);
+    box-shadow: 0 0 18px rgba(0,136,255,.25); transition: transform .15s ease, box-shadow .2s ease;
+  }
+  button:hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(90,50,255,.45); }
+  .note { opacity:.9; font-size:.9rem; margin-top: 8px; }
+
+  .topbar {
+    display:flex; align-items:center; justify-content:space-between; gap: 10px; margin-bottom: 16px;
+  }
+  .pill {
+    display:inline-block; padding: 6px 12px; border-radius: 999px;
+    border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06);
+    font-size:.9rem; opacity:.95;
+  }
+
+  @media (max-width: 750px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-  <div class="stage" role="main" aria-label="UBHACKOPOLY Player Setup">
-    <div class="sky">
-      <a class="back-btn" href="page1.html">← Back</a>
-      <div class="subtitle" id="subtitle">Player Setup</div>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Player Setup</h1>
+      <span class="pill">Step 2 → Choose names & pieces</span>
+    </div>
+    <p>Pick 2–4 players. Each player: add a name and click a token to select it.</p>
 
-      <div class="name-row">
-        <input class="name-input" id="username" type="text" placeholder="Enter your username" aria-label="Username" />
-      </div>
+    <div class="grid" id="playersGrid">
+      <!-- Player cards injected by JS -->
+    </div>
 
-      <div class="pieces-grid" role="group" aria-label="Choose your piece">
-        <button class="piece" data-piece="busPiece.png"><img src="Images/busPiece.png" alt="Bus" /></button>
-        <button class="piece" data-piece="wingPiece.png"><img src="Images/wingPiece.png" alt="Wing" /></button>
-        <button class="piece" data-piece="mascotPiece.png"><img src="Images/mascotPiece.png" alt="Mascot" /></button>
-        <button class="piece" data-piece="turkeyPiece.png"><img src="Images/turkeyPiece.png" alt="Turkey" /></button>
-      </div>
-
-      <div class="actions">
-        <button class="btn-continue" id="continueBtn">Continue</button>
-      </div>
+    <div class="actions">
+      <button id="addPlayerBtn">➕ Add Player</button>
+      <button id="removePlayerBtn">➖ Remove Player</button>
+      <button id="startBtn">🚀 Start Game</button>
+      <span class="note">We’ll save your picks and send them to the backend on <b>port 5050</b>.</span>
     </div>
   </div>
 
 <script>
-  const API = (location.protocol === "file:" || location.port !== "5000")
-    ? "http://127.0.0.1:5000"
-    : location.origin;
+/* ===== API base forced to 5050 (works for file:// or localhost) ===== */
+const API = (() => {
+  try {
+    const isFile = location.protocol === 'file:';
+    const isLocal = ['localhost','127.0.0.1','0.0.0.0'].includes(location.hostname);
+    if (isFile) return 'http://127.0.0.1:5050';
+    if (isLocal) return `http://${location.hostname}:5050`;
+    return `${location.origin}`;
+  } catch {
+    return 'http://127.0.0.1:5050';
+  }
+})();
+async function api(path, options = {}) {
+  const res = await fetch(`${API}${path}`, { headers: { "Content-Type": "application/json" }, ...options });
+  if (!res.ok) throw new Error(await res.text().catch(()=>"Request failed"));
+  return await res.json();
+}
 
-  const params = new URLSearchParams(window.location.search);
-  const totalPlayers = Math.max(1, parseInt(params.get('count') || '1', 10));
-  const players = [];
-  let i = 0;
-  let selectedPiece = null;
+/* ===== Player setup state ===== */
+const DEFAULT_PIECES = [
+  { id:"busPiece.png",    label:"Bus"     },
+  { id:"wingPiece.png",   label:"Wing"    },
+  { id:"mascotPiece.png", label:"Mascot"  },
+  { id:"turkeyPiece.png", label:"Turkey"  },
+];
+let players = [
+  { name: "Player 1", piece: "busPiece.png" },
+  { name: "Player 2", piece: "wingPiece.png" },
+];
 
-  const subtitle = document.getElementById('subtitle');
-  const usernameEl = document.getElementById('username');
-  const pieceButtons = Array.from(document.querySelectorAll('.piece'));
+/* ===== Render helpers ===== */
+function renderPlayers() {
+  const grid = document.getElementById("playersGrid");
+  grid.innerHTML = "";
+  players.forEach((p, idx) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <h2>Player ${idx + 1}</h2>
+      <label for="name_${idx}">Name</label>
+      <input id="name_${idx}" type="text" placeholder="Enter name" value="${p.name || ""}" />
+      <label style="margin-top:12px;">Choose a token</label>
+      <div class="pieces" id="pieces_${idx}">
+        ${DEFAULT_PIECES.map(piece => `
+          <div class="piece ${p.piece === piece.id ? "selected" : ""}" data-piece="${piece.id}" data-idx="${idx}">
+            <img src="Images/${piece.id}" alt="${piece.label}" />
+            <span>${piece.label}</span>
+          </div>
+        `).join("")}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
 
-  function renderStep() {
-    subtitle.textContent = `Player Setup (${i + 1} / ${totalPlayers})`;
-    usernameEl.value = players[i]?.name || '';
-    selectedPiece = players[i]?.piece || null;
-    pieceButtons.forEach(btn => {
-      const p = btn.dataset.piece;
-      const takenElsewhere = players.some((pp, idx) => idx !== i && pp?.piece === p);
-      btn.disabled = takenElsewhere;
-      btn.classList.toggle('selected', selectedPiece === p);
-      btn.style.opacity = takenElsewhere ? .45 : 1;
+  // attach listeners
+  players.forEach((p, idx) => {
+    const input = document.getElementById(`name_${idx}`);
+    input.addEventListener("input", (e) => { players[idx].name = e.target.value; });
+
+    const container = document.getElementById(`pieces_${idx}`);
+    container.querySelectorAll(".piece").forEach(el => {
+      el.addEventListener("click", () => {
+        players[idx].piece = el.dataset.piece;
+        // toggle selection visuals
+        container.querySelectorAll(".piece").forEach(k => k.classList.remove("selected"));
+        el.classList.add("selected");
+      });
     });
-    usernameEl.focus();
+  });
+}
+
+/* ===== Add/Remove player ===== */
+document.getElementById("addPlayerBtn").addEventListener("click", () => {
+  if (players.length >= 4) return alert("Max 4 players.");
+  const next = players.length + 1;
+  const nextPiece = DEFAULT_PIECES[next - 1]?.id || DEFAULT_PIECES[0].id;
+  players.push({ name: `Player ${next}`, piece: nextPiece });
+  renderPlayers();
+});
+document.getElementById("removePlayerBtn").addEventListener("click", () => {
+  if (players.length <= 2) return alert("At least 2 players required.");
+  players.pop();
+  renderPlayers();
+});
+
+/* ===== Start game: save to session + send to backend + go page3 ===== */
+document.getElementById("startBtn").addEventListener("click", async () => {
+  // validation: names non-empty & unique piece picks suggested (allow duplicates if you want)
+  for (const p of players) {
+    if (!p.name || !p.name.trim()) return alert("Please enter all player names.");
+    if (!p.piece) return alert("Please choose a token for each player.");
   }
 
-  pieceButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (btn.disabled) return;
-      pieceButtons.forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      selectedPiece = btn.dataset.piece;
-    });
-  });
+  // Save locally so page3 can bootstrap even if server restarts
+  sessionStorage.setItem("players", JSON.stringify(players));
 
-  document.getElementById('continueBtn').addEventListener('click', async () => {
-    const name = usernameEl.value.trim();
-    if (!name || !selectedPiece) { alert('Please enter a name and pick a piece.'); return; }
-    players[i] = { name, piece: selectedPiece };
+  try {
+    await api("/init_players", { method: "POST", body: JSON.stringify({ players }) });
+  } catch (e) {
+    // Let them proceed; page3 will attempt to ensure backend players again
+    console.warn("Init on server failed (continuing anyway):", e);
+  }
+  // Go to the board
+  location.href = "page3.html";
+});
 
-    if (i + 1 < totalPlayers) {
-      i += 1;
-      renderStep();
-      return;
-    }
-
-    // Persist locally (fallback)
-    sessionStorage.setItem('players', JSON.stringify(players));
-    sessionStorage.setItem('playerCount', String(totalPlayers));
-
-    // POST to backend /init_players (best effort)
-    try {
-      await fetch(`${API}/init_players`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ players })
-      });
-    } catch (e) {
-      // If backend unavailable, continue anyway (page3 will use sessionStorage)
-      console.warn("init_players failed:", e);
-    }
-
-    window.location.href = 'page3.html';
-  });
-
-  renderStep();
+/* ===== Init render ===== */
+renderPlayers();
 </script>
 </body>
 </html>
