@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-from player import Player
-from property import Property
+from Objects.player import Player
+from Objects.property import Property
 
 app = Flask(__name__)
 
