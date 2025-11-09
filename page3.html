@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   html, body {
     height: 100%;
     font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -19,154 +18,311 @@
     overflow: hidden;
   }
 
-  .game-container { display: grid; grid-template-columns: 22% 53% 25%; width: min(96vw, 1600px); height: min(96vh, 1000px); gap: 1rem; }
+  .game-container {
+    display: grid;
+    grid-template-columns: 22% 53% 25%;
+    width: min(96vw, 1600px);
+    height: min(96vh, 1000px);
+    gap: 1rem;
+  }
 
+  /* Sidebar (players) */
   .sidebar {
     backdrop-filter: blur(18px);
     background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
-    padding: 1rem 1rem 0.5rem;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    padding: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     overflow-y: auto;
   }
-  .sidebar h2 { text-align: left; font-size: 1.6rem; margin-bottom: 12px; color: #cfe8ff; text-shadow: 0 0 8px rgba(0,180,255,.5); }
-  .player-card { background: rgba(255,255,255,0.08); border-radius: 12px; margin-bottom: 0.6rem; padding: 0.8rem; border-left: 6px solid; display: flex; justify-content: space-between; align-items: center; transition: all .25s ease; }
-  .player-card.active { background: linear-gradient(135deg, #007bff, #5e1fff); transform: scale(1.03); box-shadow: 0 0 14px #2196f3cc; }
+  .sidebar h2 {
+    display: flex; align-items: center; gap: 10px;
+    font-size: clamp(1rem, 1.6vw, 1.4rem);
+    color: #b6e7ff;
+    text-shadow: 0 0 10px rgba(0,180,255,0.6);
+    margin-bottom: 10px;
+  }
+  .player-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    margin-bottom: 0.6rem;
+    padding: 0.8rem;
+    border-left: 6px solid;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all .25s ease;
+  }
+  .player-card.active {
+    background: linear-gradient(135deg, #007bff, #5e1fff);
+    transform: scale(1.03);
+    box-shadow: 0 0 14px #2196f3cc;
+  }
   .player-info { flex: 1; min-width: 0; }
-  .player-name { font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .player-balance { font-size: .95rem; opacity: .95; }
+  .player-name { font-weight: 700; font-size: clamp(.9rem, 1.5vw, 1rem); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .player-balance { font-size: .9rem; opacity: .9; }
 
-  .board-wrap { position: relative; backdrop-filter: blur(18px); background: rgba(255,255,255,0.06); border: 5px solid #00aaff; border-radius: 18px; box-shadow: 0 0 30px rgba(0,150,255,0.5); overflow: hidden; }
-  .board { position: relative; width: 100%; height: 100%; background: radial-gradient(circle at center, #071b35 25%, #00142e 100%); }
-  .tiles { position: absolute; inset: 12px; display: grid; grid-template-columns: repeat(11, 1fr); grid-template-rows: repeat(11, 1fr); gap: 4px; }
-  .tile { display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.07); font-size:clamp(9px,.95vw,13px); text-align:center; padding:4px; border-radius:8px; }
-  .tile.landed { outline:3px solid #00e5ff; box-shadow:0 0 14px #00e5ff; }
-  .corner { font-weight: 800; background: linear-gradient(145deg, #007bff, #001f5a); color: #fff; }
-  .chance { background:#a78b1d; color:#fff; }
-  .community { background:#007e33; color:#fff; }
-  .bus { background:#5f5f5f; color:#fff; }
-  .fees { background:#9c174d; color:#fff; }
+  .player-piece { width: 42px; height: 42px; display: grid; place-items: center; margin-left: 10px; }
+  .player-piece img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,.4)); }
 
-  /* Grid placement (same layout you liked) */
-  #GO { grid-row: 11; grid-column: 11; }
-  #JustVisiting { grid-row: 11; grid-column: 1; }
-  #FreeParking { grid-row: 1; grid-column: 1; }
-  #GoToAcademicViolation { grid-row: 1; grid-column: 11; }
+  /* Board area */
+  .board-wrap {
+    position: relative;
+    border-radius: 18px;
+    background: rgba(0,0,0,.25);
+    padding: 12px;
+    box-shadow: 0 0 30px rgba(0,150,255,.4) inset;
+    border: 4px solid #00aaff;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+  }
+  /* Hold the PNG image as the visual board */
+  .board-image {
+    grid-area: 1 / 1 / 2 / 2;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .board-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* keep it square and undistorted */
+    display: block;
+    user-select: none;
+    pointer-events: none; /* clicks go through to tiles */
+  }
 
-  #Baird { grid-row: 11; grid-column: 10; }
-  #CommunityChest1 { grid-row: 11; grid-column: 9; }
-  #Clements { grid-row: 11; grid-column: 8; }
-  #SAFees { grid-row: 11; grid-column: 7; }
-  #NorthBus { grid-row: 11; grid-column: 6; }
-  #Baldy { grid-row: 11; grid-column: 5; }
-  #Chance1 { grid-row: 11; grid-column: 4; }
-  #Jacobs { grid-row: 11; grid-column: 3; }
-  #Park { grid-row: 11; grid-column: 2; }
+  /* Interactive grid overlays the image but is transparent */
+  .board {
+    grid-area: 1 / 1 / 2 / 2;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+    border-radius: 12px;
+    pointer-events: none; /* we re-enable on tiles */
+  }
 
-  #OBrian { grid-row: 10; grid-column: 1; }
-  #MTBanks { grid-row: 9; grid-column: 1; }
-  #Norton { grid-row: 8; grid-column: 1; }
-  #Knox { grid-row: 7; grid-column: 1; }
-  #SouthBus { grid-row: 6; grid-column: 1; }
-  #Bonner { grid-row: 5; grid-column: 1; }
-  #CommunityChest2 { grid-row: 4; grid-column: 1; }
-  #Talbert { grid-row: 3; grid-column: 1; }
-  #Hochstetter { grid-row: 2; grid-column: 1; }
+  .tile {
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(9px, 0.85vw, 13px);
+    text-align: center; padding: 4px;
+    user-select: none;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    pointer-events: auto;            /* clickable even with parent disabled */
+    cursor: pointer;
+    transition: box-shadow .18s ease, transform .12s ease;
+  }
+  .tile:hover { box-shadow: inset 0 0 0 3px rgba(0, 229, 255, .6); transform: scale(1.02); }
+  .corner { font-weight: 800; }
 
-  #Cooke { grid-row: 1; grid-column: 2; }
-  #Chance2 { grid-row: 1; grid-column: 3; }
-  #Fronczak { grid-row: 1; grid-column: 4; }
-  #NSC { grid-row: 1; grid-column: 5; }
-  #DowntownBus { grid-row: 1; grid-column: 6; }
-  #Ketter { grid-row: 1; grid-column: 7; }
-  #Slee { grid-row: 1; grid-column: 8; }
-  #Valmar { grid-row: 1; grid-column: 9; }
-  #GoToJail { grid-row: 1; grid-column: 11; }
+  /* board layout (GO bottom-right, clockwise) */
+  #go            { grid-row: 11; grid-column: 11; }
+  #justVisiting  { grid-row: 11; grid-column: 1; }
+  #freeParking   { grid-row: 1;  grid-column: 1; }
+  #goToJail      { grid-row: 1;  grid-column: 11; }
 
-  #TheCommons { grid-row: 2; grid-column: 11; }
-  #CenterForTheArts { grid-row: 3; grid-column: 11; }
-  #CommunityChest3 { grid-row: 4; grid-column: 11; }
-  #AlumniArena { grid-row: 5; grid-column: 11; }
-  #ShoppingBus { grid-row: 6; grid-column: 11; }
-  #Chance3 { grid-row: 7; grid-column: 11; }
-  #Davis { grid-row: 8; grid-column: 11; }
-  #TextbookFees { grid-row: 9; grid-column: 11; }
-  #Jarvis { grid-row: 10; grid-column: 11; }
+  /* bottom row */
+  #baird         { grid-row: 11; grid-column: 10; }
+  #community1    { grid-row: 11; grid-column: 9;  }
+  #clements      { grid-row: 11; grid-column: 8;  }
+  #saFees        { grid-row: 11; grid-column: 7;  }
+  #northBus      { grid-row: 11; grid-column: 6;  }
+  #baldy         { grid-row: 11; grid-column: 5;  }
+  #chance1       { grid-row: 11; grid-column: 4;  }
+  #jacobs        { grid-row: 11; grid-column: 3;  }
+  #park          { grid-row: 11; grid-column: 2;  }
 
-  /* Tokens */
-  .token { position:absolute; width: clamp(22px, 2.8vw, 32px); height: clamp(22px, 2.8vw, 32px); transform: translate(-50%, -50%); z-index: 15; transition: left .2s linear, top .2s linear; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
-  .token img { width: 100%; height: 100%; object-fit: contain; }
-  .chip  { width:100%; height:100%; border-radius:50%; border:2px solid #fff; }
+  /* left column (up) */
+  #obrian        { grid-row: 10; grid-column: 1; }
+  #mtBanks       { grid-row: 9;  grid-column: 1; }
+  #norton        { grid-row: 8;  grid-column: 1; }
+  #knox          { grid-row: 7;  grid-column: 1; }
+  #southBus      { grid-row: 6;  grid-column: 1; }
+  #bonner        { grid-row: 5;  grid-column: 1; }
+  #community2    { grid-row: 4;  grid-column: 1; }
+  #talbert       { grid-row: 3;  grid-column: 1; }
+  #hochstetter   { grid-row: 2;  grid-column: 1; }
 
-  .actions { backdrop-filter: blur(18px); background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 1.5rem; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.3); }
-  .actions button { width:100%; padding:14px; border:none; border-radius:12px; background:linear-gradient(135deg,#007bff,#4a00e0); color:#fff; font-weight:700; cursor:pointer; box-shadow:0 0 18px rgba(0,136,255,.3); transition: transform .2s; }
-  .actions button:hover { transform: translateY(-2px); }
-  .dice-display { text-align:center; font-weight:700; opacity:.9; min-height:1.2em; }
+  /* top row (right) */
+  #cooke         { grid-row: 1; grid-column: 2; }
+  #chance2       { grid-row: 1; grid-column: 3; }
+  #fronczak      { grid-row: 1; grid-column: 4; }
+  #nsc           { grid-row: 1; grid-column: 5; }
+  #downtownBus   { grid-row: 1; grid-column: 6; }
+  #ketter        { grid-row: 1; grid-column: 7; }
+  #slee          { grid-row: 1; grid-column: 8; }
+  #valmar        { grid-row: 1; grid-column: 9; }
+  #furnas        { grid-row: 1; grid-column: 10; }
 
-  .popup { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #007bff, #00b3ff); color: white; padding: 15px 22px; border-radius: 12px; font-weight: 600; font-size: 1rem; box-shadow: 0 0 25px rgba(0, 180, 255, 0.5); opacity: 0; transform: translateY(-20px); transition: all .35s ease; z-index: 999; }
+  /* right column (down) */
+  #theCommons    { grid-row: 2;  grid-column: 11; }
+  #centerArts    { grid-row: 3;  grid-column: 11; }
+  #community3    { grid-row: 4;  grid-column: 11; }
+  #alumniArena   { grid-row: 5;  grid-column: 11; }
+  #shoppingBus   { grid-row: 6;  grid-column: 11; }
+  #chance3       { grid-row: 7;  grid-column: 11; }
+  #davis         { grid-row: 8;  grid-column: 11; }
+  #textbookFees  { grid-row: 9;  grid-column: 11; }
+  #jarvis        { grid-row: 10; grid-column: 11; }
+
+  /* Tokens (absolute % coordinates transformed to the ring) */
+  .token {
+    position: absolute;
+    width: clamp(18px, 3vw, 34px);
+    height: clamp(18px, 3vw, 34px);
+    transform: translate(-50%, -50%);
+    z-index: 15;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,.5));
+    transition: left .18s linear, top .18s linear;
+    pointer-events: none;
+  }
+  .token img { width: 100%; height: 100%; object-fit: contain; user-select: none; }
+
+  /* Actions panel */
+  .actions {
+    backdrop-filter: blur(18px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1.2rem;
+    display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
+  .actions button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #007bff, #4a00e0);
+    color: white;
+    font-weight: 700;
+    font-size: clamp(.9rem, 1.2vw, 1rem);
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(0,136,255,0.3);
+    transition: all 0.25s ease;
+  }
+  .actions button:hover { background: linear-gradient(135deg, #00b0ff, #5e1fff); transform: translateY(-2px); box-shadow: 0 0 25px rgba(90,50,255,0.6); }
+  .dice-display { text-align:center; font-weight:700; opacity:.9; min-height: 1.2em; }
+
+  /* Popup */
+  .popup {
+    position: fixed; top: 20px; right: 20px;
+    background: linear-gradient(135deg, #007bff, #00b3ff); color: white;
+    padding: 15px 22px; border-radius: 12px; font-weight: 600; font-size: 1rem;
+    box-shadow: 0 0 25px rgba(0, 180, 255, 0.5);
+    opacity: 0; transform: translateY(-20px); transition: all 0.35s ease; z-index: 999;
+  }
   .popup.show { opacity: 1; transform: translateY(0); }
 
-  .hidden { display: none; }
+  /* Modal for My Properties */
+  .modal-backdrop{
+    position: fixed; inset: 0; background: rgba(0,0,0,.5);
+    display: none; align-items: center; justify-content: center; z-index: 900;
+  }
+  .modal{
+    width: min(92vw, 520px);
+    background: #0c1630;
+    border: 2px solid #1e3a8a;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    padding: 16px;
+  }
+  .modal h3{ margin-bottom: 10px; color:#bde3ff; }
+  .modal .close{ float: right; background: transparent; border: none; color:#9ecbff; font-weight:700; cursor:pointer; }
+  .prop-list{ display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .pill{
+    display:inline-block; padding: 6px 10px; border-radius:999px;
+    background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+    font-size: .9rem;
+  }
+
+  @media (max-width: 1100px) {
+    .game-container { grid-template-columns: 28% 50% 22%; }
+  }
+  @media (max-width: 880px) {
+    .game-container {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto minmax(60vh, 68vh) auto;
+      width: 98vw; height: auto;
+    }
+    .sidebar { order: 1; }
+    .board-wrap { order: 2; min-height: 60vh; }
+    .actions { order: 3; }
+  }
 </style>
 </head>
 <body>
 <div class="game-container">
-  <div class="sidebar" id="playerSidebar"><h2>🎮 Players</h2></div>
+  <div class="sidebar" id="playerSidebar">
+    <h2>🎮 Players</h2>
+    <!-- player cards injected here -->
+  </div>
 
   <div class="board-wrap">
+    <!-- Background PNG -->
+    <div class="board-image" id="boardImgHolder">
+      <img src="Images/hackopoly board.png" alt="UBHACKOPOLY Board" />
+    </div>
+
+    <!-- Transparent interactive grid over the PNG -->
     <div class="board" id="board">
-      <div class="tiles">
-        <!-- Corners -->
-        <div class="tile corner" id="GO">GO</div>
-        <div class="tile corner" id="JustVisiting">Just Visiting</div>
-        <div class="tile corner" id="FreeParking">Free Parking</div>
-        <div class="tile corner" id="GoToAcademicViolation">Go to Academic Violation</div>
+      <!-- Corners -->
+      <div class="tile corner" id="go"           title="GO"></div>
+      <div class="tile corner" id="justVisiting" title="Just Visiting"></div>
+      <div class="tile corner" id="freeParking"  title="Free Parking"></div>
+      <div class="tile corner" id="goToJail"     title="Go To Jail"></div>
 
-        <!-- Bottom row -->
-        <div class="tile" id="Baird">Baird</div>
-        <div class="tile community" id="CommunityChest1">Community Chest</div>
-        <div class="tile" id="Clements">Clements</div>
-        <div class="tile fees" id="SAFees">SA Fees</div>
-        <div class="tile bus" id="NorthBus">North Bus</div>
-        <div class="tile" id="Baldy">Baldy</div>
-        <div class="tile chance" id="Chance1">Chance</div>
-        <div class="tile" id="Jacobs">Jacobs</div>
-        <div class="tile" id="Park">Park</div>
+      <!-- Bottom row -->
+      <div class="tile" id="baird"        title="Baird"></div>
+      <div class="tile" id="community1"   title="Community Chest"></div>
+      <div class="tile" id="clements"     title="Clements"></div>
+      <div class="tile" id="saFees"       title="SA Fees"></div>
+      <div class="tile" id="northBus"     title="North Bus"></div>
+      <div class="tile" id="baldy"        title="Baldy"></div>
+      <div class="tile" id="chance1"      title="Chance"></div>
+      <div class="tile" id="jacobs"       title="Jacobs"></div>
+      <div class="tile" id="park"         title="Park"></div>
 
-        <!-- Left -->
-        <div class="tile" id="OBrian">O'Brian</div>
-        <div class="tile" id="MTBanks">M &amp; T Banks</div>
-        <div class="tile" id="Norton">Norton</div>
-        <div class="tile" id="Knox">Knox</div>
-        <div class="tile bus" id="SouthBus">South Bus</div>
-        <div class="tile" id="Bonner">Bonner</div>
-        <div class="tile community" id="CommunityChest2">Community Chest</div>
-        <div class="tile" id="Talbert">Talbert</div>
-        <div class="tile" id="Hochstetter">Hochstetter</div>
+      <!-- Left -->
+      <div class="tile" id="obrian"       title="O’Brian"></div>
+      <div class="tile" id="mtBanks"      title="M & T Banks"></div>
+      <div class="tile" id="norton"       title="Norton"></div>
+      <div class="tile" id="knox"         title="Knox"></div>
+      <div class="tile" id="southBus"     title="South Bus"></div>
+      <div class="tile" id="bonner"       title="Bonner"></div>
+      <div class="tile" id="community2"   title="Community Chest"></div>
+      <div class="tile" id="talbert"      title="Talbert"></div>
+      <div class="tile" id="hochstetter"  title="Hochstetter"></div>
 
-        <!-- Top -->
-        <div class="tile" id="Cooke">Cooke</div>
-        <div class="tile chance" id="Chance2">Chance</div>
-        <div class="tile" id="Fronczak">Fronczak</div>
-        <div class="tile" id="NSC">NSC</div>
-        <div class="tile bus" id="DowntownBus">Downtown Bus</div>
-        <div class="tile" id="Ketter">Ketter</div>
-        <div class="tile" id="Slee">Slee</div>
-        <div class="tile" id="Valmar">Valmar</div>
-        <div class="tile corner" id="GoToJail">Go To Jail</div>
+      <!-- Top -->
+      <div class="tile" id="cooke"        title="Cooke"></div>
+      <div class="tile" id="chance2"      title="Chance"></div>
+      <div class="tile" id="fronczak"     title="Fronczak"></div>
+      <div class="tile" id="nsc"          title="NSC"></div>
+      <div class="tile" id="downtownBus"  title="Downtown Bus"></div>
+      <div class="tile" id="ketter"       title="Ketter"></div>
+      <div class="tile" id="slee"         title="Slee"></div>
+      <div class="tile" id="valmar"       title="Valmar"></div>
+      <div class="tile" id="furnas"       title="Furnas"></div>
 
-        <!-- Right -->
-        <div class="tile" id="TheCommons">The Commons</div>
-        <div class="tile" id="CenterForTheArts">Center for the Arts</div>
-        <div class="tile community" id="CommunityChest3">Community Chest</div>
-        <div class="tile" id="AlumniArena">Alumni Arena</div>
-        <div class="tile bus" id="ShoppingBus">Shopping Bus</div>
-        <div class="tile chance" id="Chance3">Chance</div>
-        <div class="tile" id="Davis">Davis</div>
-        <div class="tile fees" id="TextbookFees">Textbook Fees</div>
-        <div class="tile" id="Jarvis">Jarvis</div>
-      </div>
+      <!-- Right -->
+      <div class="tile" id="theCommons"   title="The Commons"></div>
+      <div class="tile" id="centerArts"   title="Center for the Arts"></div>
+      <div class="tile" id="community3"   title="Community Chest"></div>
+      <div class="tile" id="alumniArena"  title="Alumni Arena"></div>
+      <div class="tile" id="shoppingBus"  title="Shopping Bus"></div>
+      <div class="tile" id="chance3"      title="Chance"></div>
+      <div class="tile" id="davis"        title="Davis"></div>
+      <div class="tile" id="textbookFees" title="Textbook Fees"></div>
+      <div class="tile" id="jarvis"       title="Jarvis"></div>
+      <!-- tokens injected here -->
     </div>
   </div>
 
@@ -174,195 +330,226 @@
     <button id="rollBtn">🎲 Roll Dice</button>
     <div class="dice-display" id="diceDisplay">–</div>
     <button id="buyBtn">💰 Buy Property</button>
-    <button id="useCardBtn" class="hidden">🎟️ Use Chance Card</button>
+    <button id="propsBtn">📜 My Properties</button>
+    <button id="useCardBtn" style="display:none">🎟️ Use Jail Card</button>
     <button id="endTurnBtn">➡️ End Turn</button>
     <button id="resetBtn">🔄 Reset Game</button>
+  </div>
+</div>
+
+<!-- My Properties Modal -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="propsTitle">
+  <div class="modal">
+    <button class="close" id="modalClose">✖</button>
+    <h3 id="propsTitle">My Properties</h3>
+    <div id="propList" class="prop-list"></div>
   </div>
 </div>
 
 <div class="popup" id="popup">Notification</div>
 
 <script>
-const API = (location.protocol === "file:" || location.port !== "5000")
+/* ===== API helper ===== */
+const API = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
   ? "http://127.0.0.1:5000"
-  : location.origin;
-
-function showPopup(msg, color = "linear-gradient(135deg, #007bff, #00b3ff)") {
-  const p = document.getElementById("popup");
-  p.textContent = msg;
-  p.style.background = color;
-  p.classList.add("show");
-  setTimeout(() => p.classList.remove("show"), 2200);
-}
+  : `${location.origin}`;
 
 async function api(path, options = {}) {
   const res = await fetch(`${API}${path}`, { headers: { "Content-Type": "application/json" }, ...options });
   if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return await res.json();
 }
 
-let game = { active_player: 0, players: [] };
-const colors = ["#00bfff", "#ff4b5c", "#ffd700", "#00ff88", "#ff9f1c", "#9b5de5"];
-let lastKeepableCard = null; // remember the last drawn keepable card for quick 'use' button
+/* ===== State ===== */
+let players = [];
+let active = 0;
+let tokenEls = [];
 
-function idForTileName(name) {
-  const map = {
-    "GO":"GO","Just Visiting":"JustVisiting","Free Parking":"FreeParking",
-    "Go to Academic Violation":"GoToAcademicViolation","Go To Jail":"GoToJail",
-    "Baird":"Baird","Clements":"Clements","Baldy":"Baldy","Jacobs":"Jacobs","Park":"Park",
-    "O'Brian":"OBrian","M & T Banks":"MTBanks","Norton":"Norton","Knox":"Knox",
-    "Bonner":"Bonner","Talbert":"Talbert","Hochstetter":"Hochstetter",
-    "Cooke":"Cooke","Fronczak":"Fronczak","NSC":"NSC",
-    "Ketter":"Ketter","Slee":"Slee","Valmar":"Valmar",
-    "The Commons":"TheCommons","Center for the Arts":"CenterForTheArts","Alumni Arena":"AlumniArena",
-    "Davis":"Davis","Jarvis":"Jarvis","North Bus":"NorthBus","South Bus":"SouthBus",
-    "Downtown Bus":"DowntownBus","Shopping Bus":"ShoppingBus",
-    "SA Fees":"SAFees","Textbook Fees":"TextbookFees",
-    "Community Chest": null, "Chance": null // handled as groups
-  };
-  return map[name] ?? null;
+/* ===== UI helpers ===== */
+function showPopup(msg, color="#00bfff") {
+  const popup = document.getElementById("popup");
+  popup.textContent = msg;
+  popup.style.background = `linear-gradient(135deg, ${color}, #00b3ff)`;
+  popup.classList.add("show");
+  setTimeout(() => popup.classList.remove("show"), 2200);
+}
+function sidebarColor(i) {
+  return ["#00bfff", "#ff4b5c", "#ffd700", "#00ff88", "#ff9f1c", "#9b5de5"][i % 6];
+}
+function pieceFileFor(i, fallback) {
+  return fallback || ["busPiece.png", "wingPiece.png", "mascotPiece.png", "turkeyPiece.png"][i % 4];
 }
 
-function centerOfTileId(tileId) {
-  const board = document.getElementById("board").getBoundingClientRect();
-  const el = document.getElementById(tileId);
-  if (!el) return {x: board.left + board.width/2, y: board.top + board.height/2};
-  const r = el.getBoundingClientRect();
-  return { x: r.left + r.width/2, y: r.top + r.height/2 };
-}
-
-function positionTokens() {
-  const insetParent = document.getElementById("board").getBoundingClientRect();
-  const offsets = [{dx:0,dy:0},{dx:8,dy:-8},{dx:-8,dy:8},{dx:8,dy:8},{dx:-8,dy:-8}];
-
-  document.querySelectorAll(".token").forEach(el => el.remove());
-
-  (game.players || []).forEach((p, i) => {
-    const token = document.createElement("div");
-    token.className = "token";
-    if (p.piece) token.innerHTML = `<img src="Images/${p.piece}" alt="${p.name} piece" />`;
-    else token.innerHTML = `<div class="chip" style="background:${colors[i % colors.length]}"></div>`;
-
-    const tileId = idForTileName(p.tile) || "GO"; // default to GO
-    const c = centerOfTileId(tileId);
-    const off = offsets[i % offsets.length];
-
-    // convert viewport coords to board-local (left/top)
-    token.style.left = (c.x - insetParent.left + off.dx) + "px";
-    token.style.top  = (c.y - insetParent.top  + off.dy) + "px";
-
-    document.getElementById("board").appendChild(token);
-  });
-}
-
+/* ===== Render sidebar ===== */
 function renderSidebar() {
-  const side = document.getElementById("playerSidebar");
-  side.innerHTML = `<h2>🎮 Players</h2>`;
-  (game.players || []).forEach((p, i) => {
+  const el = document.getElementById("playerSidebar");
+  el.innerHTML = `<h2>🎮 Players</h2>`;
+  players.forEach((p, i) => {
     const card = document.createElement("div");
-    card.className = "player-card" + (i === game.active_player ? " active" : "");
-    card.style.borderLeftColor = colors[i % colors.length];
-    const cardCount = Array.isArray(p.cards) ? p.cards.length : 0;
+    card.className = "player-card" + (i === active ? " active" : "");
+    card.style.borderLeftColor = sidebarColor(i);
     card.innerHTML = `
       <div class="player-info">
         <div class="player-name">${p.name}</div>
-        <div class="player-balance">💵 $${p.balance} ${cardCount ? `&nbsp;•&nbsp;🎟️ ${cardCount}` : ""}</div>
-      </div>`;
-    side.appendChild(card);
+        <div class="player-balance">💵 $${p.balance}</div>
+      </div>
+      <div class="player-piece">${p.piece ? `<img src="Images/${p.piece}" alt="${p.name} piece" />` : ""}</div>
+    `;
+    el.appendChild(card);
+  });
+  const hasJailFree = (players[active]?.cards || []).some(c => c.id === "jail_free" || c.id === "cc_jail_free");
+  document.getElementById("useCardBtn").style.display = hasJailFree ? "" : "none";
+}
+
+/* ===== Tokens ===== */
+function ensureTokens() {
+  const board = document.getElementById("board");
+  if (tokenEls.length === players.length) return;
+  tokenEls.forEach(t => t.remove());
+  tokenEls = [];
+  players.forEach((p, i) => {
+    const d = document.createElement("div");
+    d.className = "token";
+    d.innerHTML = p.piece ? `<img src="Images/${p.piece}" alt="${p.name} token" />` : "🎲";
+    board.appendChild(d);
+    tokenEls.push(d);
   });
 }
 
-function clearHighlights(){ document.querySelectorAll(".tile.landed").forEach(el => el.classList.remove("landed")); }
-function highlightByName(name) {
-  clearHighlights();
-  const id = idForTileName(name);
-  if (id) document.getElementById(id)?.classList.add("landed");
-  else if (name === "Chance") ["Chance1","Chance2","Chance3"].forEach(cid => document.getElementById(cid)?.classList.add("landed"));
-  else if (name === "Community Chest") ["CommunityChest1","CommunityChest2","CommunityChest3"].forEach(cid => document.getElementById(cid)?.classList.add("landed"));
+/* Convert backend 0..100 coords into the ring on the PNG (add an inner margin) */
+function placeWithMargin(xPct, yPct, rect) {
+  const MARGIN = 9; // tune if your PNG ring is thicker/thinner
+  const sx = MARGIN + (xPct * (100 - 2 * MARGIN) / 100);
+  const sy = MARGIN + (yPct * (100 - 2 * MARGIN) / 100);
+  return {
+    left: (sx / 100) * rect.width,
+    top:  (sy / 100) * rect.height
+  };
 }
 
-async function refresh() {
-  // Try state; if server is empty, try to init from sessionStorage (self-heal)
+function positionTokens() {
+  const holder = document.getElementById("boardImgHolder");
+  const rect = holder.getBoundingClientRect();
+  players.forEach((p, i) => {
+    const [xPct, yPct] = p.coords || [100, 100]; // GO default
+    const token = tokenEls[i];
+    const { left, top } = placeWithMargin(xPct, yPct, rect);
+    const offset = [ {dx:0,dy:0}, {dx:-1.4,dy:-1.4}, {dx:1.4,dy:-1.4}, {dx:-1.4,dy:1.4}, {dx:1.4,dy:1.4} ][i % 5];
+    token.style.left = `${left + offset.dx}px`;
+    token.style.top  = `${top  + offset.dy}px`;
+  });
+}
+
+/* ===== Modal (My Properties) ===== */
+const modalBackdrop = document.getElementById("modalBackdrop");
+document.getElementById("modalClose").onclick = () => modalBackdrop.style.display = "none";
+document.getElementById("propsBtn").onclick = () => {
+  const p = players[active];
+  const list = document.getElementById("propList");
+  list.innerHTML = "";
+  if (!p || !p.properties || p.properties.length === 0) {
+    list.innerHTML = `<span class="pill" style="grid-column: 1 / span 2; opacity:.8">No properties owned yet.</span>`;
+  } else {
+    p.properties.forEach(name => {
+      const item = document.createElement("div");
+      item.className = "pill";
+      item.textContent = name;
+      list.appendChild(item);
+      const owned = document.createElement("div");
+      owned.style.textAlign = "right";
+      owned.style.opacity = ".8";
+      owned.textContent = "• owned";
+      list.appendChild(owned);
+    });
+  }
+  modalBackdrop.style.display = "flex";
+};
+modalBackdrop.addEventListener("click", (e) => { if (e.target === modalBackdrop) modalBackdrop.style.display = "none"; });
+
+/* ===== Backend bootstrapping ===== */
+async function ensureBackendPlayers() {
   try {
-    game = await api("/state");
-    if (!game.players || !game.players.length || game.players.every(p => /^Player\s+\d+$/i.test(p.name))) {
-      const local = JSON.parse(sessionStorage.getItem("players") || "[]");
-      if (local.length) {
-        await api("/init_players", { method: "POST", body: JSON.stringify({ players: local }) });
-        game = await api("/state");
-      }
-    }
-  } catch {
-    game = { active_player: 0, players: [] };
-  }
+    const existing = await api("/state");
+    if ((existing.players || []).length > 0) return;
+  } catch {}
+  try {
+    const stored = JSON.parse(sessionStorage.getItem("players") || "[]");
+    const body = stored.length ? { players: stored } : {
+      players: [
+        { name: "Player 1", piece: "busPiece.png" },
+        { name: "Player 2", piece: "wingPiece.png" },
+        { name: "Player 3", piece: "mascotPiece.png" },
+        { name: "Player 4", piece: "turkeyPiece.png" },
+      ]
+    };
+    await api("/init_players", { method: "POST", body: JSON.stringify(body) });
+  } catch {}
+}
+
+async function loadState() {
+  const data = await api("/state");
+  players = data.players.map((p, i) => ({ ...p, piece: p.piece || pieceFileFor(i, p.piece) }));
+  active = data.active_player ?? 0;
   renderSidebar();
+  ensureTokens();
   positionTokens();
 }
 
-async function doRoll() {
-  const data = await api("/roll", { method: "POST" });
-  game = data;
-  document.getElementById("diceDisplay").textContent = `🎲 ${data.roll}`;
-  showPopup(data.message, "linear-gradient(135deg,#00ffcc,#00b3ff)");
-  renderSidebar();
-  positionTokens();
-  if (data.landed) highlightByName(data.landed);
-
-  // Chance UI
-  lastKeepableCard = null;
-  document.getElementById("useCardBtn").classList.add("hidden");
-  if (data.chance_card) {
-    if (data.chance_card.type === "immediate") {
-      showPopup(`Chance: ${data.chance_card.text}`, "linear-gradient(135deg,#f7b733,#fc4a1a)");
-    } else {
-      lastKeepableCard = data.chance_card; // e.g., jail_free
-      document.getElementById("useCardBtn").classList.remove("hidden");
-      showPopup(`Chance (kept): ${data.chance_card.text}`, "linear-gradient(135deg,#ffd166,#f77f00)");
-    }
-  }
-}
-
-document.getElementById("rollBtn").onclick = () => doRoll().catch(e => showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"));
+/* ===== Buttons ===== */
+document.getElementById("rollBtn").onclick = async () => {
+  try {
+    const data = await api("/roll", { method: "POST" });
+    document.getElementById("diceDisplay").textContent = data.roll ?? "-";
+    if (data.message) showPopup(data.message, "#00ffcc");
+    players = data.players; active = data.active_player ?? active;
+    renderSidebar(); ensureTokens(); positionTokens();
+  } catch (e) { showPopup("Backend error: " + e.message, "#ff5c6b"); }
+};
 
 document.getElementById("buyBtn").onclick = async () => {
   try {
     const data = await api("/buy", { method: "POST" });
-    if (data.error) showPopup(data.error, "linear-gradient(135deg,#ff5a6b,#ff2a68)");
-    else showPopup(data.message || "Bought.", "linear-gradient(135deg,#ffb300,#ff8a00)");
-    game = data; renderSidebar();
-  } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
+    if (data.error) showPopup(data.error, "#ff6b6b"); else showPopup(data.message || "Purchased.", "#ffb300");
+    players = data.players; active = data.active_player ?? active;
+    renderSidebar();
+  } catch (e) { showPopup("Backend error: " + e.message, "#ff5c6b"); }
+};
+
+document.getElementById("useCardBtn").onclick = async () => {
+  try {
+    let out = await api("/use_card", { method: "POST", body: JSON.stringify({ card_id: "jail_free" }) });
+    if (out.error) out = await api("/use_card", { method: "POST", body: JSON.stringify({ card_id: "cc_jail_free" }) });
+    if (out.error) showPopup(out.error, "#ff6b6b"); else showPopup(out.message || "Card used.", "#7ee787");
+    players = out.players; active = out.active_player ?? active;
+    renderSidebar();
+  } catch (e) { showPopup("Backend error: " + e.message, "#ff5c6b"); }
 };
 
 document.getElementById("endTurnBtn").onclick = async () => {
   try {
     const data = await api("/end_turn", { method: "POST" });
-    game = data; renderSidebar();
-    document.getElementById("useCardBtn").classList.add("hidden");
-    showPopup(`Next: ${data.players[data.active_player].name}`, "linear-gradient(135deg,#4a9eff,#5e1fff)");
-  } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
+    showPopup(`Turn ended. ${data.next_player}'s turn!`, "#4a9eff");
+    players = data.players; active = data.active_player ?? 0;
+    renderSidebar();
+  } catch (e) { showPopup("Backend error: " + e.message, "#ff5c6b"); }
 };
 
 document.getElementById("resetBtn").onclick = async () => {
   try {
     const data = await api("/reset", { method: "POST" });
-    game = data; renderSidebar(); positionTokens(); clearHighlights();
-    document.getElementById("useCardBtn").classList.add("hidden");
-    showPopup("Game reset!", "linear-gradient(135deg,#ff4b5c,#ff6f91)");
-  } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
+    showPopup("Game reset.", "#9be9a8");
+    players = data.players; active = data.active_player ?? 0;
+    renderSidebar(); ensureTokens(); positionTokens();
+    document.getElementById("diceDisplay").textContent = "–";
+  } catch (e) { showPopup("Backend error: " + e.message, "#ff5c6b"); }
 };
 
-document.getElementById("useCardBtn").onclick = async () => {
-  if (!lastKeepableCard) return;
-  try {
-    const data = await api("/use_card", { method: "POST", body: JSON.stringify({ card_id: lastKeepableCard.id }) });
-    game = data; renderSidebar(); positionTokens();
-    document.getElementById("useCardBtn").classList.add("hidden");
-    showPopup(data.message || "Used card.", "linear-gradient(135deg,#06d6a0,#118ab2)");
-  } catch (e) { showPopup(e.message, "linear-gradient(135deg,#ff5a6b,#ff2a68)"); }
-};
-
-window.addEventListener("resize", positionTokens);
-refresh();
+/* ===== Init ===== */
+(async function init() {
+  await ensureBackendPlayers();
+  await loadState();
+  window.addEventListener("resize", positionTokens);
+})();
 </script>
 </body>
 </html>
