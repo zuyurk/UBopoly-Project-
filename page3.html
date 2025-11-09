@@ -9,7 +9,7 @@
 
   html, body {
     height: 100%;
-    font-family: "Poppins", sans-serif;
+    font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     background: radial-gradient(circle at top, #0b1335, #02040a 85%);
     color: #fff;
     display: flex;
@@ -21,8 +21,8 @@
   .game-container {
     display: grid;
     grid-template-columns: 22% 53% 25%;
-    width: 96vw;
-    height: 96vh;
+    width: min(96vw, 1600px);
+    height: min(96vh, 1000px);
     gap: 1rem;
   }
 
@@ -38,33 +38,32 @@
   }
   .sidebar h2 {
     text-align: center;
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 1.6vw, 1.3rem);
     margin-bottom: 10px;
     color: #00c0ff;
     text-shadow: 0 0 10px rgba(0,180,255,0.8);
   }
-
   .player-card {
     background: rgba(255,255,255,0.08);
-    border-radius: 10px;
+    border-radius: 12px;
     margin-bottom: 0.6rem;
     padding: 0.8rem;
-    border-left: 5px solid;
+    border-left: 6px solid;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease;
+    transition: all .25s ease;
   }
   .player-card.active {
     background: linear-gradient(135deg, #007bff, #5e1fff);
     transform: scale(1.03);
     box-shadow: 0 0 14px #2196f3cc;
   }
-  .player-info { flex: 1; }
-  .player-name { font-weight: 700; font-size: 1rem; }
-  .player-balance { font-size: 0.85rem; opacity: 0.9; }
+  .player-info { flex: 1; min-width: 0; }
+  .player-name { font-weight: 700; font-size: clamp(.9rem, 1.5vw, 1rem); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .player-balance { font-size: .9rem; opacity: .9; }
 
-  .player-piece { width: 42px; height: 42px; display: grid; place-items: center; }
+  .player-piece { width: 42px; height: 42px; display: grid; place-items: center; margin-left: 10px; }
   .player-piece img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,.4)); }
 
   /* The Board */
@@ -81,38 +80,23 @@
     box-shadow: 0 0 30px rgba(0, 150, 255, 0.5);
     overflow: hidden;
   }
-
   .tile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     border: 1px solid rgba(255, 255, 255, 0.2);
     font-size: clamp(8px, 0.9vw, 13px);
-    text-align: center;
-    padding: 3px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    user-select: none;
+    text-align: center; padding: 3px;
+    cursor: pointer; transition: all 0.2s ease; user-select: none;
   }
-  .tile:hover {
-    transform: scale(1.06);
-    z-index: 5;
-    background: rgba(0, 200, 255, 0.2);
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
-  }
-  .tile:active {
-    transform: scale(0.98);
-    background: rgba(0, 150, 255, 0.35);
-    box-shadow: 0 0 20px rgba(0, 150, 255, 0.8);
-  }
+  .tile:hover { transform: scale(1.06); z-index: 5; background: rgba(0, 200, 255, 0.2); box-shadow: 0 0 12px rgba(0, 255, 255, 0.6); }
+  .tile:active { transform: scale(0.98); background: rgba(0, 150, 255, 0.35); box-shadow: 0 0 20px rgba(0, 150, 255, 0.8); }
 
-  .corner { font-weight: bold; background: linear-gradient(145deg, #007bff, #001f5a); color: white; }
+  .corner { font-weight: 800; background: linear-gradient(145deg, #007bff, #001f5a); color: white; }
   .chance { background: #a78b1d; color: #fff; }
   .community { background: #007e33; color: white; }
   .bus { background: #5f5f5f; color: white; }
   .fees { background: #9c174d; color: white; }
 
-  /* Board layout (GO bottom-left clockwise) */
+  /* Board layout (GO bottom-right, clockwise) */
   #go { grid-row: 11; grid-column: 11; }
   #justVisiting { grid-row: 11; grid-column: 1; }
   #freeParking { grid-row: 1; grid-column: 1; }
@@ -129,7 +113,7 @@
   #jacobs { grid-row: 11; grid-column: 3; }
   #park { grid-row: 11; grid-column: 2; }
 
-  /* Right column */
+  /* Left column (upwards) */
   #obrian { grid-row: 10; grid-column: 1; }
   #mtBanks { grid-row: 9; grid-column: 1; }
   #norton { grid-row: 8; grid-column: 1; }
@@ -140,7 +124,7 @@
   #talbert { grid-row: 3; grid-column: 1; }
   #hochstetter { grid-row: 2; grid-column: 1; }
 
-  /* Top row */
+  /* Top row (rightwards) */
   #cooke { grid-row: 1; grid-column: 2; }
   #chance2 { grid-row: 1; grid-column: 3; }
   #fronczak { grid-row: 1; grid-column: 4; }
@@ -151,7 +135,7 @@
   #valmar { grid-row: 1; grid-column: 9; }
   #furnas { grid-row: 1; grid-column: 10; }
 
-  /* Left column */
+  /* Right column (downwards) */
   #theCommons { grid-row: 2; grid-column: 11; }
   #centerArts { grid-row: 3; grid-column: 11; }
   #community3 { grid-row: 4; grid-column: 11; }
@@ -169,59 +153,34 @@
     border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
     padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 16px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 16px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
   .actions button {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
+    width: 100%; padding: 14px; border: none; border-radius: 12px;
     background: linear-gradient(135deg, #007bff, #4a00e0);
-    color: white;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 0 18px rgba(0,136,255,0.3);
-    transition: all 0.3s ease;
+    color: white; font-weight: 700; font-size: clamp(.9rem, 1.2vw, 1rem);
+    cursor: pointer; box-shadow: 0 0 18px rgba(0,136,255,0.3);
+    transition: all 0.25s ease;
   }
-  .actions button:hover {
-    background: linear-gradient(135deg, #00b0ff, #5e1fff);
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(90,50,255,0.6);
-  }
-  .dice-display { text-align:center; font-weight:700; opacity:.9; }
+  .actions button:hover { background: linear-gradient(135deg, #00b0ff, #5e1fff); transform: translateY(-2px); box-shadow: 0 0 25px rgba(90,50,255,0.6); }
+  .dice-display { text-align:center; font-weight:700; opacity:.9; min-height: 1.2em; }
 
-  /* Popup / notification */
+  /* Popup */
   .popup {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #007bff, #00b3ff);
-    color: white;
-    padding: 15px 22px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1rem;
+    position: fixed; top: 20px; right: 20px;
+    background: linear-gradient(135deg, #007bff, #00b3ff); color: white;
+    padding: 15px 22px; border-radius: 12px; font-weight: 600; font-size: 1rem;
     box-shadow: 0 0 25px rgba(0, 180, 255, 0.5);
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.4s ease;
-    z-index: 999;
+    opacity: 0; transform: translateY(-20px); transition: all 0.35s ease; z-index: 999;
   }
   .popup.show { opacity: 1; transform: translateY(0); }
 
-  /* ===== Center slanted logo ===== */
+  /* Center slanted logo */
   .center-overlay{
-    position:absolute;
-    left:50%; top:50%;
+    position:absolute; left:50%; top:50%;
     transform: translate(-50%,-50%) rotate(-12deg);
-    z-index: 8; /* below corner buttons */
-    pointer-events: none;
+    z-index: 8; pointer-events: none;
   }
   .center-logo{
     width: clamp(260px, 38vw, 520px);
@@ -230,33 +189,47 @@
     user-select:none;
   }
 
-  /* ===== Diagonal card buttons ===== */
+  /* Diagonal overlay buttons */
   .corner-card {
-    position: absolute;
-    z-index: 12;
-    pointer-events: auto;
-    appearance:none;
-    border: 2px solid #ffd166;
-    background: rgba(0,0,0,.28);
-    color:#ffd166;
-    font-weight:800;
-    letter-spacing:.06em;
-    padding: 14px 18px;
-    border-radius: 14px;
-    text-transform: uppercase;
-    box-shadow: 0 10px 26px rgba(0,0,0,.35);
-    cursor:pointer;
-    transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease, opacity .15s ease;
+    position: absolute; z-index: 12; pointer-events: auto;
+    appearance:none; border: 2px solid #ffd166; background: rgba(0,0,0,.28);
+    color:#ffd166; font-weight:800; letter-spacing:.06em; padding: 14px 18px;
+    border-radius: 14px; text-transform: uppercase; box-shadow: 0 10px 26px rgba(0,0,0,.35);
+    cursor:pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
     transform: rotate(-8deg);
   }
   .corner-card:hover { transform: rotate(-8deg) translateY(-2px); background: rgba(255,209,102,.12); color:#fff0c2; border-color:#ffe39b; }
 
-  /* Community Chest color theme */
+  /* Community theming */
   #communityBtnBR { border-color:#7ecbff; color:#7ecbff; }
   #communityBtnBR:hover { background: rgba(126,203,255,.12); color:#e7f5ff; border-color:#bde4ff; }
 
-  @media (max-width: 900px){
-    .corner-card { padding: 12px 14px; }
+  /* Player tokens inside board */
+  .token {
+    position: absolute;
+    width: clamp(18px, 3.2vw, 34px);
+    height: clamp(18px, 3.2vw, 34px);
+    transform: translate(-50%, -50%);
+    z-index: 15;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,.5));
+    transition: left .12s linear, top .12s linear;
+  }
+  .token img {
+    width: 100%; height: 100%; object-fit: contain; user-select: none; pointer-events: none;
+  }
+
+  @media (max-width: 1100px) {
+    .game-container { grid-template-columns: 28% 50% 22%; }
+  }
+  @media (max-width: 880px) {
+    .game-container {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto minmax(60vh, 70vh) auto;
+      width: 98vw; height: auto;
+    }
+    .sidebar { order: 1; }
+    .board { order: 2; min-height: 60vh; }
+    .actions { order: 3; }
   }
 </style>
 </head>
@@ -291,7 +264,7 @@
     <div class="tile" id="jacobs">Jacobs</div>
     <div class="tile" id="park">Park</div>
 
-    <!-- Right -->
+    <!-- Left (up) -->
     <div class="tile" id="obrian">O’Brian</div>
     <div class="tile" id="mtBanks">M&T Banks</div>
     <div class="tile" id="norton">Norton</div>
@@ -302,7 +275,7 @@
     <div class="tile" id="talbert">Talbert</div>
     <div class="tile" id="hochstetter">Hochstetter</div>
 
-    <!-- Top -->
+    <!-- Top (right) -->
     <div class="tile" id="cooke">Cooke</div>
     <div class="tile chance" id="chance2">Chance</div>
     <div class="tile" id="fronczak">Fronczak</div>
@@ -313,7 +286,7 @@
     <div class="tile" id="valmar">Valmar</div>
     <div class="tile" id="furnas">Furnas</div>
 
-    <!-- Left -->
+    <!-- Right (down) -->
     <div class="tile" id="theCommons">The Commons</div>
     <div class="tile" id="centerArts">Center for the Arts</div>
     <div class="tile community" id="community3">Community Chest</div>
@@ -337,39 +310,54 @@
 <div class="popup" id="popup">Notification</div>
 
 <script>
-/* ---- Pull players from sessionStorage (set by page 2) ---- */
+/* ===== Load players from sessionStorage ===== */
 function loadPlayersFromStorage() {
   try {
     const stored = JSON.parse(sessionStorage.getItem('players') || '[]');
     const count = parseInt(sessionStorage.getItem('playerCount') || '0', 10);
-
     if (Array.isArray(stored) && stored.length > 0) {
       const palette = ["#00bfff", "#ff4b5c", "#ffd700", "#00ff88", "#ff9f1c", "#9b5de5"];
       return stored.slice(0, Math.max(count, stored.length)).map((p, idx) => ({
         name: p.name || `Player ${idx+1}`,
         color: palette[idx % palette.length],
         balance: 1500,
-        pieceFile: p.piece || null
+        pieceFile: p.piece || null,
+        pos: 0         // board index (0 == GO)
       }));
     }
-  } catch (e) { /* ignore and fall back */ }
-
+  } catch (e) {}
+  // Fallback demo players
   return [
-    { name: "Player 1", color: "#00bfff", balance: 1500, pieceFile: "busPiece.png" },
-    { name: "Player 2", color: "#ff4b5c", balance: 1500, pieceFile: "wingPiece.png" },
-    { name: "Player 3", color: "#ffd700", balance: 1500, pieceFile: "mascotPiece.png" },
-    { name: "Player 4", color: "#00ff88", balance: 1500, pieceFile: "turkeyPiece.png" },
+    { name: "Player 1", color: "#00bfff", balance: 1500, pieceFile: "busPiece.png",    pos: 0 },
+    { name: "Player 2", color: "#ff4b5c", balance: 1500, pieceFile: "wingPiece.png",   pos: 0 },
+    { name: "Player 3", color: "#ffd700", balance: 1500, pieceFile: "mascotPiece.png", pos: 0 },
+    { name: "Player 4", color: "#00ff88", balance: 1500, pieceFile: "turkeyPiece.png", pos: 0 },
   ];
 }
 
 let players = loadPlayersFromStorage();
 let activePlayer = 0;
+let animating = false;
 
+/* ===== Board path (clockwise from GO) ===== */
+const PATH = [
+  "go",
+  // bottom row (moving left)
+  "baird","community1","clements","saFees","northBus","baldy","chance1","jacobs","park","justVisiting",
+  // left edge (moving up)
+  "obrian","mtBanks","norton","knox","southBus","bonner","community2","talbert","hochstetter","freeParking",
+  // top row (moving right)
+  "cooke","chance2","fronczak","nsc","downtownBus","ketter","slee","valmar","furnas","goToJail",
+  // right edge (moving down)
+  "theCommons","centerArts","community3","alumniArena","shoppingBus","chance3","davis","textbookFees","jarvis"
+];
+const BOARD_LEN = PATH.length; // 40
+
+/* ===== Sidebar ===== */
 function pieceMarkup(p) {
   const src = p.pieceFile ? `Images/${p.pieceFile}` : "";
   return src ? `<img src="${src}" alt="${p.name} piece" />` : "🎲";
 }
-
 function renderSidebar() {
   const sidebar = document.getElementById("playerSidebar");
   sidebar.innerHTML = `<h2>🎮 Players</h2>`;
@@ -390,26 +378,60 @@ function renderSidebar() {
 }
 renderSidebar();
 
-/* ---- Make Tiles Clickable ---- */
-document.querySelectorAll(".tile").forEach(tile => {
-  tile.addEventListener("click", () => {
-    const name = tile.textContent.trim();
-    showPopup(`${players[activePlayer].name} clicked ${name}!`, "#00bfff");
+/* ===== Tokens ===== */
+const boardEl = document.getElementById("board");
+const tokenEls = []; // DOM elements for each player's token
+
+function createTokens() {
+  players.forEach((p, i) => {
+    const token = document.createElement("div");
+    token.className = "token";
+    token.dataset.index = i;
+    // slight per-player offset so they don't overlap exactly
+    token.dataset.offset = i; 
+    token.innerHTML = p.pieceFile ? `<img src="Images/${p.pieceFile}" alt="${p.name} token" />` : "🎲";
+    boardEl.appendChild(token);
+    tokenEls.push(token);
   });
-  tile.addEventListener("mouseenter", () => { tile.style.filter = "brightness(1.3)"; });
-  tile.addEventListener("mouseleave", () => { tile.style.filter = "brightness(1)"; });
-});
+}
+createTokens();
 
-/* ---- Diagonal buttons click handlers ---- */
-document.getElementById('chanceBtnTL').addEventListener('click', () => {
-  showPopup(`${players[activePlayer].name} drew a Chance card!`, "#a78b1d");
-});
-document.getElementById('communityBtnBR').addEventListener('click', () => {
-  showPopup(`${players[activePlayer].name} opened Community Chest!`, "#2aa0ff");
-});
+function tileCenter(id) {
+  const tile = document.getElementById(id);
+  const b = boardEl.getBoundingClientRect();
+  const r = tile.getBoundingClientRect();
+  return {
+    x: r.left - b.left + r.width / 2,
+    y: r.top  - b.top  + r.height / 2
+  };
+}
 
-/* ---- Position the diagonal buttons ~25px from the logo,
-        nudged (Chance RIGHT/DOWN, Community LEFT/UP) ---- */
+function offsetForPlayer(index) {
+  // Arrange up to 4 tokens around the center (tiny diamond)
+  const d = 10; // px offset distance
+  const patterns = [
+    {dx: 0,  dy: 0},
+    {dx: -d, dy: -d},
+    {dx:  d, dy: -d},
+    {dx: -d, dy:  d},
+    {dx:  d, dy:  d},
+  ];
+  return patterns[index % patterns.length];
+}
+
+function positionAllTokens() {
+  players.forEach((p, i) => {
+    const token = tokenEls[i];
+    const center = tileCenter(PATH[p.pos]);
+    const off = offsetForPlayer(i);
+    token.style.left = `${center.x + off.dx}px`;
+    token.style.top  = `${center.y + off.dy}px`;
+  });
+}
+window.addEventListener('load', positionAllTokens);
+window.addEventListener('resize', () => { positionAllTokens(); positionCornerButtons(); });
+
+/* ===== Chance / Community overlay buttons near the center logo ===== */
 function positionCornerButtons() {
   const board  = document.getElementById('board');
   const logo   = document.getElementById('centerLogo');
@@ -417,43 +439,53 @@ function positionCornerButtons() {
   const comm   = document.getElementById('communityBtnBR');
 
   const GAP = 25;       // base distance from logo edge
-  const CHANCE_DX = 200; // move Chance RIGHT
-  const CHANCE_DY = 40; // move Chance DOWN
-  const COMM_DX   = -200; // move Community LEFT
-  const COMM_DY   = -40; // move Community UP
+  const CHANCE_DX = 220; // move Chance RIGHT
+  const CHANCE_DY = 60;  // move Chance DOWN
+  const COMM_DX   = -220;// move Community LEFT
+  const COMM_DY   = -60; // move Community UP
 
   const boardRect  = board.getBoundingClientRect();
   const logoRect   = logo.getBoundingClientRect();
   const chanceRect = chance.getBoundingClientRect();
   const commRect   = comm.getBoundingClientRect();
 
-  // Chance near logo's top-left
   let chanceTop  = (logoRect.top  - boardRect.top) - GAP - chanceRect.height + CHANCE_DY;
   let chanceLeft = (logoRect.left - boardRect.left) - GAP - chanceRect.width  + CHANCE_DX;
 
-  // Community near logo's bottom-right
   let commTop  = (logoRect.bottom - boardRect.top) + GAP + COMM_DY;
   let commLeft = (logoRect.right  - boardRect.left) + GAP + COMM_DX;
 
-  // Clamp inside board (8px padding)
-  chanceTop  = Math.max(8, Math.min(boardRect.height - chanceRect.height - 8, chanceTop));
-  chanceLeft = Math.max(8, Math.min(boardRect.width  - chanceRect.width  - 8, chanceLeft));
-  commTop    = Math.max(8, Math.min(boardRect.height - commRect.height - 8, commTop));
-  commLeft   = Math.max(8, Math.min(boardRect.width  - commRect.width  - 8, commLeft));
+  // Clamp inside board
+  const pad = 8;
+  chanceTop  = Math.max(pad, Math.min(boardRect.height - chanceRect.height - pad, chanceTop));
+  chanceLeft = Math.max(pad, Math.min(boardRect.width  - chanceRect.width  - pad, chanceLeft));
+  commTop    = Math.max(pad, Math.min(boardRect.height - commRect.height - pad, commTop));
+  commLeft   = Math.max(pad, Math.min(boardRect.width  - commRect.width  - pad, commLeft));
 
   chance.style.top  = `${chanceTop}px`;
   chance.style.left = `${chanceLeft}px`;
   comm.style.top    = `${commTop}px`;
   comm.style.left   = `${commLeft}px`;
 }
-
-// Recalculate on load/resize & after logo loads
 window.addEventListener('load', positionCornerButtons);
-window.addEventListener('resize', positionCornerButtons);
 const centerLogo = document.getElementById('centerLogo');
 centerLogo.complete ? positionCornerButtons() : centerLogo.addEventListener('load', positionCornerButtons);
 
-/* ---- Popup helper ---- */
+/* ===== Tile interactions (simple popup demo) ===== */
+document.querySelectorAll(".tile").forEach(tile => {
+  tile.addEventListener("click", () => {
+    const name = tile.textContent.trim();
+    showPopup(`${players[activePlayer].name} clicked ${name}!`, "#00bfff");
+  });
+});
+document.getElementById('chanceBtnTL').addEventListener('click', () => {
+  showPopup(`${players[activePlayer].name} drew a Chance card!`, "#a78b1d");
+});
+document.getElementById('communityBtnBR').addEventListener('click', () => {
+  showPopup(`${players[activePlayer].name} opened Community Chest!`, "#2aa0ff");
+});
+
+/* ===== Popup helper ===== */
 function showPopup(message, color="#00bfff") {
   const popup = document.getElementById("popup");
   popup.textContent = message;
@@ -462,23 +494,77 @@ function showPopup(message, color="#00bfff") {
   setTimeout(() => popup.classList.remove("show"), 2000);
 }
 
-/* ---- Action buttons ---- */
+/* ===== Movement / Dice ===== */
+function stepOnce(playerIndex) {
+  const p = players[playerIndex];
+  const old = p.pos;
+  const next = (old + 1) % BOARD_LEN;
+  p.pos = next;
+
+  // passed GO?
+  if (next === 0) {
+    p.balance += 200;
+    showPopup(`${p.name} passed GO! +$200`, "#00e676");
+    renderSidebar();
+  }
+
+  // move token visually
+  const token = tokenEls[playerIndex];
+  const c = tileCenter(PATH[p.pos]);
+  const off = offsetForPlayer(playerIndex);
+  token.style.left = `${c.x + off.dx}px`;
+  token.style.top  = `${c.y + off.dy}px`;
+}
+
+function moveActivePlayer(steps, onDone) {
+  animating = true;
+  let count = 0;
+  const id = setInterval(() => {
+    stepOnce(activePlayer);
+    count++;
+    if (count >= steps) {
+      clearInterval(id);
+      animating = false;
+      if (typeof onDone === 'function') onDone();
+    }
+  }, 180); // step speed (ms)
+}
+
+/* ===== Buttons ===== */
 document.getElementById("rollBtn").onclick = () => {
-  const roll = Math.floor(Math.random() * 6) + 1;
-  document.getElementById("diceDisplay").textContent = `🎲 ${roll}`;
-  showPopup(`${players[activePlayer].name} rolled a ${roll}!`, "#00ffcc");
+  if (animating) return;
+  const d1 = Math.floor(Math.random()*6)+1;
+  const d2 = Math.floor(Math.random()*6)+1;
+  document.getElementById("diceDisplay").textContent = `🎲 ${d1}, ${d2}`;
+  showPopup(`${players[activePlayer].name} rolled ${d1} and ${d2}!`, "#00ffcc");
+  moveActivePlayer(d1 + d2);
 };
+
 document.getElementById("buyBtn").onclick = () => {
-  showPopup(`${players[activePlayer].name} bought a property!`, "#ffb300");
+  // simple demo: costs $100 if affordable
+  const p = players[activePlayer];
+  if (p.balance >= 100) {
+    p.balance -= 100;
+    renderSidebar();
+    showPopup(`${p.name} bought a property (-$100)!`, "#ffb300");
+  } else {
+    showPopup(`${p.name} doesn't have enough money.`, "#ff6b6b");
+  }
 };
+
 document.getElementById("useCardBtn").onclick = () => {
   showPopup(`${players[activePlayer].name} used a jail card!`, "#ff5c93");
 };
+
 document.getElementById("endTurnBtn").onclick = () => {
+  if (animating) return;
   activePlayer = (activePlayer + 1) % players.length;
   renderSidebar();
   showPopup(`Turn ended. ${players[activePlayer].name}'s turn!`, "#4a9eff");
 };
+
+/* ===== Initial placement ===== */
+positionAllTokens();
 </script>
 </body>
 </html>
