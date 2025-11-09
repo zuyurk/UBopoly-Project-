@@ -212,15 +212,29 @@
   .actions button:hover { background: linear-gradient(135deg, #00b0ff, #5e1fff); transform: translateY(-2px); box-shadow: 0 0 25px rgba(90,50,255,0.6); }
   .dice-display { text-align:center; font-weight:700; opacity:.9; min-height: 1.2em; }
 
-  /* Popup */
-  .popup {
-    position: fixed; top: 20px; right: 20px;
-    background: linear-gradient(135deg, #007bff, #00b3ff); color: white;
-    padding: 15px 22px; border-radius: 12px; font-weight: 600; font-size: 1rem;
-    box-shadow: 0 0 25px rgba(0, 180, 255, 0.5);
-    opacity: 0; transform: translateY(-20px); transition: all 0.35s ease; z-index: 999;
-  }
-  .popup.show { opacity: 1; transform: translateY(0); }
+  /* Popup moved to bottom-right */
+.popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #007bff, #00b3ff);
+  color: white;
+  padding: 15px 22px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 0 25px rgba(0, 180, 255, 0.5);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.35s ease;
+  z-index: 999;
+  max-width: 300px;
+}
+.popup.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
   /* Modal for My Properties */
   .modal-backdrop{
@@ -551,6 +565,50 @@ document.getElementById("resetBtn").onclick = async () => {
   await loadState();
   window.addEventListener("resize", positionTokens);
 })();
+</script>
+<script>
+const propertyInfo = {
+  "Baird": { color:"brown", price:60, rent:{house:[2,10,30,90,160], hotel:250} },
+  "Clements": { color:"brown", price:60, rent:{house:[4,20,60,180,320], hotel:450} },
+  "Baldy": { color:"light blue", price:100, rent:{house:[6,30,90,270,400], hotel:550} },
+  "Jacobs": { color:"light blue", price:100, rent:{house:[6,30,90,270,400], hotel:550} },
+  "Park": { color:"light blue", price:120, rent:{house:[8,40,100,300,450], hotel:600} },
+  "O'Brian": { color:"pink", price:140, rent:{house:[8,40,100,300,450], hotel:600} },
+  "Norton": { color:"pink", price:140, rent:{house:[8,40,100,300,450], hotel:600} },
+  "Knox": { color:"pink", price:160, rent:{house:[10,50,150,450,625], hotel:750} },
+  "Bonner": { color:"orange", price:180, rent:{house:[10,50,150,450,625], hotel:750} },
+  "Talbert": { color:"orange", price:180, rent:{house:[10,50,150,450,625], hotel:750} },
+  "Hochstetter": { color:"orange", price:200, rent:{house:[12,60,180,500,700], hotel:750} },
+  "Cooke": { color:"red", price:220, rent:{house:[22,110,330,800,1000], hotel:900} },
+  "Fronczak": { color:"red", price:220, rent:{house:[22,110,330,800,1000], hotel:900} },
+  "NSC": { color:"red", price:240, rent:{house:[24,120,360,850,1050], hotel:950} },
+  "Ketter": { color:"yellow", price:260, rent:{house:[24,120,360,850,1050], hotel:950} },
+  "Slee": { color:"yellow", price:260, rent:{house:[26,130,390,900,1100], hotel:1000} },
+  "Furnas": { color:"yellow", price:280, rent:{house:[26,130,390,900,1100], hotel:1000} },
+  "The Commons": { color:"green", price:300, rent:{house:[28,150,450,1000,1200], hotel:1050} },
+  "Center for the Arts": { color:"green", price:300, rent:{house:[28,150,450,1000,1200], hotel:1050} },
+  "Alumni Arena": { color:"green", price:320, rent:{house:[30,160,500,1100,1300], hotel:1100} },
+  "Davis": { color:"dark blue", price:350, rent:{house:[35,175,500,1200,1400], hotel:1200} },
+  "Jarvis": { color:"dark blue", price:400, rent:{house:[50,200,600,1400,1700], hotel:1400} }
+};
+
+document.querySelectorAll(".tile").forEach(tile => {
+  tile.addEventListener("mouseenter", () => {
+    const info = propertyInfo[tile.title];
+    if(info){
+      const rentHouses = info.rent.house.join(", ");
+      showPopup(`${tile.title} <br> Color: ${info.color} <br> Price: $${info.price} <br> Rent (houses): ${rentHouses} <br> Rent (hotel): $${info.rent.hotel}`);
+    }
+  });
+});
+
+function showPopup(text){
+  const popup = document.getElementById("popup");
+  popup.innerHTML = text;
+  popup.classList.add("show");
+  clearTimeout(popup.timeout);
+  popup.timeout = setTimeout(()=>{ popup.classList.remove("show"); }, 4000);
+}
 </script>
 </body>
 </html>

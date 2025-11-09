@@ -1,6 +1,5 @@
 from Objects.property import Property
 
-
 class Player:
     GO_CASH = 200  # Money received when passing GO
 
@@ -8,8 +7,9 @@ class Player:
         self.name = name
         self.balance = starting_balance
         self.position = start_tile  # Board index
-        self.coordinates = (0, 0)  # Optional: (x, y) for display
+        self.coordinates = (0, 0)  # Optional: (x, y) for UI
         self.properties = []  # List of Property/Railroad/Utility objects
+        self.cards = []  # "Get Out of Jail Free" cards
         self.in_jail = False
         self.jail_turns = 0
         self.bankrupt = False
@@ -29,7 +29,7 @@ class Player:
         if passed_go:
             self.balance += Player.GO_CASH
 
-        # Update coordinates (for UI)
+        # Update coordinates for UI
         self.coordinates = board.get_tile_coordinates(self.position)
 
         return (
@@ -43,38 +43,35 @@ class Player:
     # ------------------------
     def buy_property(self, prop):
         """Handles purchase for Property, Railroad, or Utility."""
-        if prop.owner() is not None:
-            return f"{prop.name} is already owned by {prop.owner().name}."
+        if prop.owner is not None:
+            return f"{prop.name} is already owned by {prop.owner.name}."
         if self.balance < prop.purchase_price():
             return f"{self.name} doesn't have enough money to buy {prop.name}."
 
         # Transaction
         self.balance -= prop.purchase_price()
-        prop.transfer_owner(self)
+        prop.owner = self
         self.properties.append(prop)
         return f"{self.name} bought {prop.name} for ${prop.purchase_price()}."
 
     def pay_rent(self, prop, dice_roll=None):
         """Pays rent for any property type. Utility uses dice roll."""
-        if not prop.owner() or prop.owner() == self:
+        if prop.owner is None or prop.owner == self:
             return None  # No rent to pay
 
-        rent = prop.rent()
-        # Utilities depend on dice roll
-        if hasattr(prop, "rent") and "dice_roll" in prop.rent.__code__.co_varnames:
-            rent = prop.rent(dice_roll)
+        rent = prop.rent() if dice_roll is None else prop.rent(dice_roll)
 
         if self.balance >= rent:
             self.balance -= rent
-            prop.owner().balance += rent
-            return f"{self.name} paid ${rent} rent to {prop.owner().name} for {prop.name}."
+            prop.owner.balance += rent
+            return f"{self.name} paid ${rent} rent to {prop.owner.name} for {prop.name}."
         else:
-            self.go_bankrupt(prop.owner())
+            self.go_bankrupt(prop.owner)
             return f"{self.name} couldn't afford rent (${rent}) and went bankrupt!"
 
     def owns_full_color_set(self, color):
         """Check if player owns all properties of a specific color group."""
-        color_properties = [p for p in self.properties if hasattr(p, "color") and p.color == color]
+        color_properties = [p for p in self.properties if getattr(p, "color", None) == color]
         total_color_count = sum(1 for c in Property.color_table.values() if c == color)
         return len(color_properties) == total_color_count
 
@@ -84,13 +81,22 @@ class Player:
     def go_bankrupt(self, creditor=None):
         self.bankrupt = True
         for prop in self.properties:
-            if creditor:
-                prop.transfer_owner(creditor)
-            else:
-                prop.transfer_owner(None)
+            prop.owner = creditor
         self.properties.clear()
         self.balance = 0
         return f"{self.name} is bankrupt."
+
+    # ------------------------
+    # Card Management
+    # ------------------------
+    def add_card(self, card_id):
+        self.cards.append(card_id)
+
+    def use_card(self, card_id):
+        if card_id in self.cards:
+            self.cards.remove(card_id)
+            return True
+        return False
 
     # ------------------------
     # Money / Net Worth
@@ -103,4 +109,4 @@ class Player:
     # Representation
     # ------------------------
     def __repr__(self):
-        return f"<Player {self.name}: ${self.balance}, Pos={self.position}, Coords={self.coordinates}>"
+        return f"<Player {self.name}: ${self.balance}, Pos={self.position}, Coords={self.coordinates}, Properties={len(self.properties)}>"
