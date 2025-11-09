@@ -6,7 +6,7 @@ class Player:
         self.balance = starting_balance
         self.position = start_tile  # Board index
         self.coordinates = (0, 0)  # Optional: (x, y) for display
-        self.properties = []  # List of Property objects
+        self.properties = []  # List of Property/Railroad/Utility objects
         self.in_jail = False
         self.jail_turns = 0
         self.bankrupt = False
@@ -26,7 +26,7 @@ class Player:
         if passed_go:
             self.balance += Player.GO_CASH
 
-        # Update coordinates (for UI purposes)
+        # Update coordinates (for UI)
         self.coordinates = board.get_tile_coordinates(self.position)
 
         return (
@@ -38,33 +38,41 @@ class Player:
     # ------------------------
     # Property Management
     # ------------------------
-    def buy_property(self, property):
-        if self.balance >= property.purchase_price() and not property.owner():
-            self.balance -= property.purchase_price()
-            property.transfer_owner(self)
-            self.properties.append(property)
-            return f"{self.name} bought {property.name} for ${property.purchase_price()}."
-        elif property.owner():
-            return f"{property.name} is already owned by {property.owner().name}."
-        else:
-            return f"{self.name} doesn't have enough money to buy {property.name}."
+    def buy_property(self, prop):
+        """Handles purchase for Property, Railroad, or Utility."""
+        if prop.owner() is not None:
+            return f"{prop.name} is already owned by {prop.owner().name}."
+        if self.balance < prop.purchase_price():
+            return f"{self.name} doesn't have enough money to buy {prop.name}."
 
-    def pay_rent(self, property):
-        if property.owner() and property.owner() != self:
-            rent = property.rent()
-            if self.balance >= rent:
-                self.balance -= rent
-                property.owner().balance += rent
-                return f"{self.name} paid ${rent} rent to {property.owner().name}."
-            else:
-                self.go_bankrupt(property.owner())
-                return f"{self.name} couldn't afford rent and went bankrupt!"
+        # Transaction
+        self.balance -= prop.purchase_price()
+        prop.transfer_owner(self)
+        self.properties.append(prop)
+        return f"{self.name} bought {prop.name} for ${prop.purchase_price()}."
+
+    def pay_rent(self, prop, dice_roll=None):
+        """Pays rent for any property type. Utility uses dice roll."""
+        if not prop.owner() or prop.owner() == self:
+            return None  # No rent to pay
+
+        rent = prop.rent()
+        # Utilities depend on dice roll
+        if hasattr(prop, "rent") and "dice_roll" in prop.rent.__code__.co_varnames:
+            rent = prop.rent(dice_roll)
+
+        if self.balance >= rent:
+            self.balance -= rent
+            prop.owner().balance += rent
+            return f"{self.name} paid ${rent} rent to {prop.owner().name} for {prop.name}."
+        else:
+            self.go_bankrupt(prop.owner())
+            return f"{self.name} couldn't afford rent (${rent}) and went bankrupt!"
 
     def owns_full_color_set(self, color):
-        """Check if player owns all properties of a specific color."""
-        color_properties = [p for p in self.properties if p.color == color]
-        # Compare count with total properties of that color
-        total_color_count = sum(1 for p_name, c in property.color_table.items() if c == color)
+        """Check if player owns all properties of a specific color group."""
+        color_properties = [p for p in self.properties if hasattr(p, "color") and p.color == color]
+        total_color_count = sum(1 for c in Property.color_table.values() if c == color)
         return len(color_properties) == total_color_count
 
     # ------------------------
