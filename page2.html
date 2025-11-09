@@ -8,7 +8,7 @@
     :root{
       --sky-1:#e6f4ff; --sky-2:#bfe4f2; --ink:#1d2230;
       --tile:#f2e9d7; --shadow:0 12px 30px rgba(0,0,0,.18);
-      --accent:#ff642b; /* keep for focus states */
+      --accent:#0b5fbf; --accent-soft:rgba(11,95,191,.15);
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
@@ -29,10 +29,35 @@
       gap:clamp(14px,3vw,30px);
       padding:clamp(12px,2vw,28px); text-align:center;
     }
-    /* Only change: subtitle color */
+
+    /* Back button (top-left inside the sky box) */
+    .back-btn{
+      position:absolute;
+      top:14px; left:14px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 14px;
+      border-radius:12px;
+      background:#ffffffcc;
+      color:#0b5fbf;
+      border:2px solid #d5e6ff;
+      box-shadow:0 6px 16px rgba(0,0,0,.12);
+      cursor:pointer;
+      font-weight:700;
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
+      text-decoration:none;
+    }
+    .back-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 22px rgba(0,0,0,.18);
+      background:#ffffff;
+      border-color:#b7d2ff;
+    }
+    .back-btn:active{ transform:translateY(0) }
+    .back-btn svg{ width:18px; height:18px; }
+
     .subtitle{
       font-weight:800; letter-spacing:.12em; text-transform:uppercase;
-      color:#0b5fbf; /* deep blue */
+      color:#0b5fbf;
       text-shadow:0 2px 0 #ffffff66, 0 4px 18px rgba(0,0,0,.15);
       font-size:clamp(14px,2.8vw,32px);
     }
@@ -44,7 +69,7 @@
       transition:border-color .15s ease, box-shadow .15s ease;
     }
     .name-input::placeholder{ color:#6b7280 }
-    .name-input:focus{ border-color:var(--accent); box-shadow:0 10px 24px rgba(0,0,0,.16), 0 0 0 3px rgba(43,108,255,.15) }
+    .name-input:focus{ border-color:var(--accent); box-shadow:0 10px 24px rgba(0,0,0,.16), 0 0 0 3px var(--accent-soft) }
 
     .pieces-grid{
       width:min(90%,720px); margin:0 auto;
@@ -55,46 +80,125 @@
       width:100%; aspect-ratio:1/1; border-radius:14px;
       background:var(--tile); border:3px dashed #c6bda7; box-shadow:var(--shadow);
       display:grid; place-items:center; cursor:pointer;
-      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease, filter .12s ease;
+      overflow:hidden;
     }
-    .piece:hover{ transform:translateY(-3px); box-shadow:0 16px 32px rgba(0,0,0,.22) }
-    .piece.selected{ border-style:solid; border-color:var(--accent); background:#fff;
-      box-shadow:0 0 0 4px rgba(255, 181, 43, 0.18), 0 16px 32px rgba(0,0,0,.22) }
-    .piece-label{ font-size:clamp(12px,2vw,16px); opacity:.5; user-select:none }
+    .piece:hover{ transform:translateY(-3px); box-shadow:0 16px 32px rgba(0,0,0,.22); filter:saturate(1.03); }
+    .piece.selected{
+      border-style:solid; border-color:var(--accent); background:#fff;
+      box-shadow:0 0 0 4px var(--accent-soft), 0 16px 32px rgba(0,0,0,.22);
+    }
+    .piece img{
+      width:80%; height:80%; object-fit:contain; pointer-events:none; user-select:none;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.18));
+    }
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    /* Continue button */
+    .actions{
+      width:min(90%,720px);
+      margin-top:clamp(8px,2vw,16px);
+      display:flex; justify-content:center;
+    }
+    .btn-continue{
+      appearance:none; border:none; cursor:pointer;
+      padding:14px 24px; border-radius:14px;
+      background:linear-gradient(180deg, var(--accent), #0b5fbf);
+      color:#fff; font-weight:800; letter-spacing:.04em;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+      transition:transform .12s ease, box-shadow .12s ease, filter .12s ease, opacity .12s ease;
+    }
+    .btn-continue:hover{ transform:translateY(-2px); box-shadow:0 16px 36px rgba(0,0,0,.24); filter:saturate(1.05); }
+    .btn-continue:active{ transform:translateY(0); box-shadow:0 8px 18px rgba(0,0,0,.18); }
+    .btn-continue[disabled]{ opacity:.6; cursor:not-allowed; }
 
     @media(max-width:800px){ .pieces-grid{ grid-template-columns:repeat(2,1fr) } }
     @media(max-width:640px){
       .stage{ width:98vw; aspect-ratio:7/5 }
       .sky{ inset:8px }
+      .back-btn{ top:10px; left:10px; padding:10px 12px }
     }
   </style>
 </head>
 <body>
   <div class="stage" role="main" aria-label="UBHACKOPOLY Player Setup">
     <div class="sky">
+      <!-- Back Button -->
+      <button class="back-btn" id="backBtn" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
+      </button>
+
       <div class="subtitle">Player Setup</div>
 
       <div class="name-row">
-        <input class="name-input" type="text" placeholder="Enter your username" aria-label="Username" />
+        <input class="name-input" id="username" type="text" placeholder="Enter your username" aria-label="Username" />
       </div>
 
+      <!-- Piece choices with your image files -->
       <div class="pieces-grid" role="group" aria-label="Choose your piece">
-        <button class="piece" aria-label="Piece 1"><span class="piece-label">Piece 1</span></button>
-        <button class="piece" aria-label="Piece 2"><span class="piece-label">Piece 2</span></button>
-        <button class="piece" aria-label="Piece 3"><span class="piece-label">Piece 3</span></button>
-        <button class="piece" aria-label="Piece 4"><span class="piece-label">Piece 4</span></button>
+        <button class="piece" data-piece="busPiece.png" aria-label="Bus piece">
+          <img src="Images/busPiece.png" alt="Bus piece icon" />
+          <span class="sr-only">Bus</span>
+        </button>
+
+        <button class="piece" data-piece="wingPiece.png" aria-label="Wing piece">
+          <img src="Images/wingPiece.png" alt="Wing piece icon" />
+          <span class="sr-only">Wing</span>
+        </button>
+
+        <button class="piece" data-piece="mascotPiece.png" aria-label="Mascot piece">
+          <img src="Images/mascotPiece.png" alt="Mascot piece icon" />
+          <span class="sr-only">Mascot</span>
+        </button>
+
+        <button class="piece" data-piece="turkeyPiece.png" aria-label="Turkey piece">
+          <img src="Images/turkeyPiece.png" alt="Turkey piece icon" />
+          <span class="sr-only">Turkey</span>
+        </button>
+      </div>
+
+      <!-- Continue Button -->
+      <div class="actions">
+        <button class="btn-continue" id="continueBtn" aria-label="Continue">Continue</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Optional selection toggle
+    // Back button: go to previous page or fallback to player select
+    document.getElementById('backBtn').addEventListener('click', () => {
+      if (history.length > 1) {
+        history.back();
+      } else {
+        window.location.href = 'page1.html'; // fallback (change if your select page is different)
+      }
+    });
+
+    // Piece selection
     const pieces = document.querySelectorAll('.piece');
+    let selectedPiece = null;
+
     pieces.forEach(btn => {
       btn.addEventListener('click', () => {
         pieces.forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
+        selectedPiece = btn.dataset.piece; // filename like "busPiece.png"
       });
+    });
+
+    // Continue: pass name & piece as query params (edit target if needed)
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      const name = document.getElementById('username').value.trim();
+      const params = new URLSearchParams();
+      if (name) params.set('name', name);
+      if (selectedPiece) params.set('piece', selectedPiece);
+      // Example next page:
+      window.location.href = 'page3.html' + (params.toString() ? ('?' + params.toString()) : '');
     });
   </script>
 </body>
