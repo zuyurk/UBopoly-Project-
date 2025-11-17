@@ -1,144 +1,159 @@
 🎲 UBHACKOPOLY
-A fully interactive Monopoly-style game built with Flask, JavaScript, and a custom game engine.
+UBHACKOPOLY is a Monopoly-style digital board game themed around the University at Buffalo.
+It uses a Flask backend for game logic and a JavaScript frontend for an interactive web UI.
 
-UBHackopoly is a digital board game inspired by Monopoly and themed around the University at Buffalo. It features a Flask backend, a dynamic JavaScript frontend, and a complete set of APIs that power dice rolls, property purchases, turn handling, and full game state syncing.
+🚀 Overview
 
-🚀 Features
+
+Backend: Python + Flask REST API
+
+
+Frontend: HTML, CSS, JavaScript
+
+
+Data format: JSON over HTTP
+
+
+Features: dice rolls, turns, property buying, live player balances
+
+
+
 🧠 Backend (Flask)
 
-REST API using Flask + JSON
 
-Centralized state for:
+Manages full game state:
 
-Players
 
-Positions
+Players, balances, positions, properties
 
-Balances
 
-Properties owned
 
-Endpoints:
 
-/state → fetch full game state
+Main endpoints:
 
-/roll → roll dice & move active player
 
-/buy → attempt to purchase a property
+GET /state – return current game state
 
-/end_turn → move to the next player
 
-Automatic CORS support for browser frontend
+POST /roll – roll dice and move active player
 
-Clean JSON responses with error handling
+
+POST /buy – attempt to buy current property
+
+
+POST /end_turn – advance to next player
+
+
+
+
+Returns structured JSON and uses CORS for browser access
+
+
 
 🖥️ Frontend (HTML/CSS/JS)
 
-Neon-style responsive UI
 
-Interactive digital game board
+Neon-style Monopoly board built with CSS grid
 
-Player sidebar that updates live
 
-Roll, Buy, End Turn, Use Jail Card controls
+Player sidebar with live money updates and active player highlight
 
-Popup notifications for all actions
 
-Player highlighting and animated UI feedback
+Controls:
 
-Full state synchronization with backend APIs
 
-🎮 Game Logic
+🎲 Roll Dice
 
-Turn-based sequence
 
-Dice roll movement
+💰 Buy Property
 
-Money management
 
-Property purchasing rules
+🎟️ Use Jail Card (placeholder)
 
-Jail card placeholder system
 
-Expandable for rent, cards, trades, and more
+➡️ End Turn
 
-📡 API Overview
-GET /state
 
-Returns current full game state.
 
-POST /roll
 
-Rolls dice and moves the active player.
+Uses fetch() to call Flask endpoints and update the UI based on JSON responses
 
-POST /buy
 
-Attempts to buy the property the active player is currently on.
+Popup notifications for actions and feedback
 
-POST /end_turn
 
-Advances turn to the next player.
 
-All APIs return JSON similar to:
+🏁 How to Run
 
-{
-  "message": "Player 1 bought Cooke!",
-  "players": [...],
-  "active_player": 0
-}
 
-🏁 How to Run the Project
-1. Install dependencies
+Install dependencies:
+
+
 pip install flask flask-cors
 
-2. Start the backend
+
+
+Start the backend:
+
+
 python server.py
 
-
-Runs at:
-
+Server runs at:
 http://127.0.0.1:5000/
 
-3. Open the frontend
 
-Open page3.html directly or with VSCode Live Server.
+Open the frontend:
+
+
+
+
+Open page3.html in your browser
+or use a simple static server (like VS Code Live Server)
+
+
 
 📁 Project Structure
 UBHackopoly/
-│
-├── server.py           # Flask REST API & game state engine
-├── page1.html          # Start screen
-├── page2.html          # Player setup
-├── page3.html          # Main game board UI
-├── Images/             # Tokens or design assets
-└── README.md
+  server.py       # Flask API and game engine
+  page1.html      # Start screen (player count)
+  page2.html      # Player setup and piece selection
+  page3.html      # Main board and gameplay UI
+  Images/         # Player tokens and assets
+  README.md
 
-🧑‍💻 Technical Summary
 
-The frontend uses JavaScript’s fetch() API to send actions (roll, buy, end turn) to the Flask backend.
-Flask modifies the game engine in memory and returns JSON updates.
-The browser then updates the UI instantly based on the API response.
+🔧 Technical Summary
 
-This architecture cleanly separates responsibilities:
 
-Flask = game rules + state
+Frontend sends actions (roll, buy, end turn) via fetch()
 
-Frontend = visuals + user interactions
 
-🛠️ Future Features (Planned)
+Flask updates game state in memory and returns JSON
 
-Rent system based on tile ownership
 
-Chance & Community Chest effects
+UI re-renders player balances, active player, and notifications from that JSON
 
-Trading system
 
-Auctions
+Backend = rules and state
+Frontend = visuals and interaction
 
-Jail / bail mechanics
+🔮 Future Ideas
 
-Animated player movement
 
-Online multiplayer using WebSockets
+Rent and house/hotel system
 
-Save / load game system
+
+Chance and Community Chest logic
+
+
+Trading and auctions
+
+
+Jail and bail rules
+
+
+Animated piece movement
+
+
+Online multiplayer and save/load support
+
